@@ -1,0 +1,15 @@
+{{ define "main" }}
+<div class="wrap">
+  <article class="page">
+    <header class="page-head"><h1>{{ .Title }}</h1></header>
+    <div class="prose">{{ .Content }}</div>
+    {{- with hugo.Data.contributors }}
+    <ul class="contributors">
+      {{- range sort . "sort" }}<li>{{ .name }}</li>{{ end }}
+    </ul>
+    {{- else }}
+    <p class="empty">暂无署名的贡献者。</p>
+    {{- end }}
+  </article>
+</div>
+{{ end }}

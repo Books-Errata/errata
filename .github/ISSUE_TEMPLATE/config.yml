@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 不使用 GitHub？通过邮件提交
+    url: https://errata.hone.ink/contribute/#email
+    about: 发邮件到 errata@hone.ink，由维护者整理成条目。邮件格式见参与贡献页。
+  - name: 收录原则与写作要求
+    url: https://errata.hone.ink/contribute/
+    about: 提交之前，请先读一遍。

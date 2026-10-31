@@ -1,0 +1,67 @@
+name: 指正已有条目
+description: 指出已有条目的不妥之处、补充依据、报告新印次已修订，或告诉我们你已对照原书核实。
+title: "[指正] "
+labels: ["指正"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        从条目页底部的「指正此条」进入时，标题和条目链接会自动填好。
+
+  - type: input
+    id: entry
+    attributes:
+      label: 条目链接
+      placeholder: https://errata.hone.ink/books/...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 类别
+      options:
+        - 条目有误或不妥
+        - 补充依据或说明
+        - 已对照原书核实，此条无误
+        - 新印次已修订此处
+        - 其他
+    validations:
+      required: true
+
+  - type: input
+    id: edition
+    attributes:
+      label: 你所据的版次与印次
+      description: 核实条目或报告新印次已修订时必填；其他情况如与条目所据版本不同，也请注明。
+      placeholder: 2020年1月第1版，2023年5月第4次印刷
+    validations:
+      required: false
+
+  - type: textarea
+    id: details
+    attributes:
+      label: 说明
+      description: |
+        具体说明，附上可核对的依据。核实条目时，写明你对照的原书版本和页码。
+        只针对文本，不评价译者，不推测成因。
+    validations:
+      required: true
+
+  - type: input
+    id: credit
+    attributes:
+      label: 署名（可选）
+      description: 希望在贡献者名单中显示的名字。不填则不列名。
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: agreement
+    attributes:
+      label: 确认
+      options:
+        - label: 我同意以 CC BY-SA 4.0 授权本站使用我撰写的说明文字。
+          required: true
+        - label: 我已阅读收录原则与写作要求，并按要求撰写。
+          required: true

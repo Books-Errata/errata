@@ -1,3 +1,69 @@
-baseURL = 'https://example.org/'
-locale = 'en-us'
-title = 'My New Hugo Project'
+baseURL = 'https://errata.hone.ink/'
+locale = 'zh-Hans'
+defaultContentLanguage = 'zh-hans'
+title = '推敲・译著勘误'
+timeZone = 'Asia/Shanghai'
+
+# 参考资料站：不提供 RSS，不按时间组织
+disableKinds = ['rss']
+enableGitInfo = true
+hasCJKLanguage = true
+
+[languages.zh-hans]
+  locale = 'zh-Hans'
+  weight = 1
+
+[taxonomies]
+  type = 'types'
+  # term = 'terms'
+
+# 「最后修订」取 Git 提交时间；本地未提交时退回文件修改时间
+[frontmatter]
+  lastmod = [':git', 'lastmod', ':fileModTime']
+
+[markup.goldmark.extensions.typographer]
+  # 不自动替换引号、破折号和省略号，原文引文保持原样
+  disable = true
+
+[markup.goldmark.parser.attribute]
+  block = false
+  title = true
+
+[markup.tableOfContents]
+  startLevel = 2
+  endLevel = 3
+
+[params]
+  description = '记录各类中文译著里的翻译错误，且读且记且更正。'
+  repo = 'https://github.com/Books-Errata/errata'
+  branch = 'main'
+  email = 'errata@hone.ink'
+
+[[menus.main]]
+  name = '首页'
+  pageRef = '/'
+  weight = 10
+[[menus.main]]
+  name = '书目'
+  pageRef = '/books'
+  weight = 20
+  # [[menus.main]]
+#   name = '术语'
+#   pageRef = '/terms'
+#   weight = 30
+[[menus.main]]
+  name = '类型'
+  pageRef = '/types'
+  weight = 40
+  [[menus.main]]
+  name = '参与贡献'
+  pageRef = '/contribute'
+  weight = 50
+[[menus.main]]
+  name = '关于'
+  pageRef = '/about'
+  weight = 60
+
+
+[caches.images]
+  dir = ':cacheDir/images'

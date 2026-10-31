@@ -1,0 +1,44 @@
+{{ define "main" }}
+{{- $book := .CurrentSection }}
+{{- $tl := partial "book-lang.html" $book }}
+{{- $revised := in (slice "已修订" "已修訂") .Params.status }}
+<div class="wrap">
+  <nav class="crumbs" aria-label="位置">
+    <a href="{{ "books/" | relURL }}">书目</a><span class="crumbs__sep" aria-hidden="true">／</span><a href="{{ $book.RelPermalink }}" lang="{{ $tl }}">{{ $book.Title }}</a>
+  </nav>
+
+  <article class="entry" data-pagefind-body data-pagefind-meta="title:{{ .Title }}　《{{ $book.Title }}》">
+    <header class="page-head">
+      <h1>{{ .Title }}</h1>
+      {{- partial "contrast.html" . }}
+    </header>
+
+    <dl class="facts" data-pagefind-ignore>
+      <div><dt>译著</dt><dd><a href="{{ $book.RelPermalink }}" lang="{{ $tl }}">《{{ $book.Title }}》</a>{{ with $book.Params.edition }}<span class="facts__note" lang="{{ $tl }}">{{ . }}</span>{{ end }}</dd></div>
+      <div><dt>页码</dt><dd>中译本第{{ .Params.page_cn | default .Weight }}页{{ with .Params.page_orig }}，原书第{{ . }}页{{ end }}</dd></div>
+      <div><dt>类型</dt><dd>{{ partial "type-tags.html" . }}</dd></div>
+      {{- with .GetTerms "terms" }}
+      <div><dt>术语</dt><dd>
+        {{- range $i, $t := . }}{{ if $i }}、{{ end }}<a href="{{ $t.RelPermalink }}">{{ $t.Title }}</a>（<span lang="en">{{ $t.Params.original | default $t.Data.Term }}</span>）{{ end -}}
+      </dd></div>
+      {{- end }}
+      <div><dt>状态</dt><dd>{{ if $revised }}已修订{{ with .Params.revised_in }}<span class="facts__note" lang="{{ $tl }}">{{ . }}</span>{{ end }}{{ else }}未修订{{ end }}</dd></div>
+      <div><dt>核实</dt><dd>{{ if .Params.verified }}已有他人对照原书核实{{ else }}<span class="pending">待核实</span><span class="facts__note">尚无他人对照原书核实</span>{{ end }}</dd></div>
+    </dl>
+
+    <div class="prose entry__body" lang="{{ $tl }}"><section class="entry-sec entry-sec--lead">{{ .Content }}</section></div>
+
+    <span hidden data-pagefind-filter="书">{{ $book.Title }}</span>
+    {{- range .GetTerms "types" }}<span hidden data-pagefind-filter="类型">{{ .LinkTitle }}</span>{{ end }}
+  </article>
+
+  <footer class="entry-foot">
+    {{- if not .Lastmod.IsZero }}
+    <p>最后修订：<a href="{{ site.Params.repo }}/commits/{{ site.Params.branch }}/content/{{ .File.Path }}">{{ .Lastmod | time.Format "2006年1月2日" }}</a></p>
+    {{- end }}
+    {{- $q := querify "template" "correct-entry.yml" "title" (printf "[指正] %s（《%s》）" .Title $book.Title) "entry" .Permalink }}
+    {{- $issue := printf "%s/issues/new?%s" site.Params.repo $q }}
+    <p><a class="fix-link" href="{{ $issue | safeURL }}">指正此条</a></p>
+  </footer>
+</div>
+{{ end }}

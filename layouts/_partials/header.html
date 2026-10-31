@@ -1,0 +1,14 @@
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="site-name" href="{{ "/" | relURL }}">{{ site.Title }}</a>
+    <nav class="site-nav" aria-label="主导航">
+      <ul>
+      {{- range site.Menus.main }}
+        {{- $here := eq $.RelPermalink .URL }}
+        {{- $within := and (ne .URL "/") (hasPrefix $.RelPermalink .URL) }}
+        <li><a href="{{ .URL }}"{{ if $here }} aria-current="page"{{ else if $within }} class="is-within"{{ end }}>{{ .Name }}</a></li>
+      {{- end }}
+      </ul>
+    </nav>
+  </div>
+</header>

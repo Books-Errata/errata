@@ -1,0 +1,7 @@
+{{ define "main" }}
+<div class="wrap">
+  <header class="page-head"><h1>{{ .Title }}</h1></header>
+  <div class="prose">{{ .Content }}</div>
+  {{ partial "grouped-by-book.html" .Pages }}
+</div>
+{{ end }}

@@ -1,0 +1,18 @@
+{{ define "main" }}
+<div class="wrap home">
+  <h1 class="home__title"><span class="home__mark">推敲</span><span class="home__sub">译著勘误</span></h1>
+  <div class="prose home__intro">{{ .Content }}</div>
+
+  <form class="search-form" action="{{ "search/" | relURL }}" method="get" role="search">
+    <label class="visually-hidden" for="home-q">搜索</label>
+    <input id="home-q" type="search" name="q" placeholder="搜索原文、译文或说明" autocomplete="off">
+    <button type="submit">搜索</button>
+  </form>
+
+  <dl class="ways">
+    <div><dt><a href="{{ "books/" | relURL }}">按书目</a></dt><dd>所有收录的中译本，按书名排序。</dd></div>
+    <div><dt><a href="{{ "types/" | relURL }}">按类型</a></dt><dd>误译、漏译、专名与术语误识，以及可商榷之处和删节与改写的对照。</dd></div>
+    <div><dt><a href="{{ "contribute/" | relURL }}">参与贡献</a></dt><dd>提交新的勘误，或指正已有条目。</dd></div>
+  </dl>
+</div>
+{{ end }}

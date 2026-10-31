@@ -1,0 +1,18 @@
+{{ define "main" }}
+<div class="wrap">
+  <header class="page-head"><h1>{{ .Title }}</h1></header>
+  <div class="prose">{{ .Content }}</div>
+  {{- $items := slice }}
+  {{- range .Pages }}{{ $items = $items | append (dict "key" (lower (.Params.original | default .Data.Term)) "page" .) }}{{ end }}
+  <dl class="term-list">
+    {{- range sort $items "key" }}{{ with .page }}
+    <div>
+      <dt><a href="{{ .RelPermalink }}"><span lang="en">{{ .Params.original | default .Data.Term }}</span></a><span class="term-list__zh">{{ .Title }}</span></dt>
+      <dd>{{ .Description }}</dd>
+    </div>
+    {{- end }}{{ else }}
+    <p class="empty">暂无术语。</p>
+    {{- end }}
+  </dl>
+</div>
+{{ end }}

@@ -1,0 +1,12 @@
+{{- $tl := partial "book-lang.html" . -}}
+<dl class="facts">
+  {{- with .Params.original_title }}
+  <div><dt>原书名</dt><dd><cite lang="{{ $.Params.source_lang }}">{{ . }}</cite></dd></div>
+  {{- end }}
+  {{- with .Params.author }}<div><dt>原作者</dt><dd>{{ . }}</dd></div>{{ end }}
+  {{- with .Params.translator }}<div><dt>翻译者</dt><dd lang="{{ $tl }}">{{ . }}</dd></div>{{ end }}
+  {{- with .Params.publisher }}<div><dt>出版社</dt><dd lang="{{ $tl }}">{{ . }}</dd></div>{{ end }}
+  {{- with .Params.edition }}<div><dt>版次印次</dt><dd lang="{{ $tl }}">{{ . }}</dd></div>{{ end }}
+  {{- with .Params.original_edition }}<div><dt>所据原书</dt><dd>{{ . }}</dd></div>{{ end }}
+  {{- with .Params.source_lang }}<div><dt>原书语言</dt><dd>{{ partial "lang-name.html" . }}</dd></div>{{ end }}
+</dl>

@@ -1,0 +1,30 @@
+{{- /*
+  条目页正文的二级标题：按标题文字识别小节的角色，并把每个小节包进 <section>，
+  以便样式表区分原文、现译、建议等。条目正文的写法不变，仍是「## 原文」之类。
+
+  书页（books 下的 section）的正文标题一律降一级，因为它们排在「整体说明」之下。
+
+  做法：books/page.html 在正文外先开一个 <section>；这里每遇到一个二级标题，
+  就先关上前一个 <section>，再开一个新的。只用于条目页的顶层二级标题。
+*/ -}}
+{{- $roles := dict
+  "原文" "orig"
+  "现译" "current"     "現譯" "current"
+  "问题" "problem"     "問題" "problem"
+  "讨论" "discussion"  "討論" "discussion"
+  "建议" "suggestion"  "建議" "suggestion"
+  "依据" "basis"       "依據" "basis"
+  "对照说明" "comparison" "對照說明" "comparison" -}}
+{{- $isEntry := and (eq .Page.Kind "page") (eq .Page.Section "books") -}}
+{{- if and $isEntry (eq .Level 2) -}}
+{{- $role := index $roles (trim .PlainText " ") | default "other" -}}
+</section><section class="entry-sec entry-sec--{{ $role }}">
+<h2 id="{{ .Anchor }}">{{ .Text }}</h2>
+{{- else -}}
+{{- $level := .Level -}}
+{{- /* 书页的正文排在「整体说明」之下，标题降一级 */ -}}
+{{- if and (eq .Page.Kind "section") (eq .Page.Section "books") (not .Page.Parent.IsHome) -}}
+  {{- $level = add .Level 1 -}}
+{{- end -}}
+<h{{ $level }} id="{{ .Anchor }}"{{ with .Attributes.class }} class="{{ . }}"{{ end }}>{{ .Text }}</h{{ $level }}>
+{{- end -}}

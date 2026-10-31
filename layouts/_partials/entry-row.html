@@ -1,0 +1,11 @@
+<li class="entry-row">
+  <span class="entry-row__page">第{{ .Params.page_cn | default .Weight }}页</span>
+  <div class="entry-row__body">
+    <a class="entry-row__title" href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{- partial "type-tags.html" . }}
+    {{- if not .Params.verified }}
+    <span class="pending" title="尚无他人对照原书核实">待核实</span>
+    {{- end }}
+    {{- partial "contrast.html" . }}
+  </div>
+</li>

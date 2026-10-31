@@ -1,0 +1,16 @@
+{{ define "main" }}
+<div class="wrap">
+  <nav class="crumbs" aria-label="位置"><a href="{{ "terms/" | relURL }}">术语</a></nav>
+  <article data-pagefind-body>
+    <header class="page-head">
+      <h1>{{ .Title }}</h1>
+      <p class="page-head__note"><span lang="en">{{ .Params.original | default .Data.Term }}</span></p>
+    </header>
+    <div class="prose">{{ .Content }}</div>
+    <section class="entries" data-pagefind-ignore>
+      <h2>相关条目</h2>
+      {{ partial "grouped-by-book.html" .Pages }}
+    </section>
+  </article>
+</div>
+{{ end }}

@@ -1,0 +1,12 @@
+{{- /* 返回 <title> 文本 */ -}}
+{{- $s := site.Title -}}
+{{- if not .IsHome -}}
+  {{- $t := .Title -}}
+  {{- if and (eq .Kind "page") (eq .Section "books") -}}
+    {{- $t = printf "%s（《%s》）" .Title .CurrentSection.Title -}}
+  {{- else if and (eq .Kind "term") (eq .Section "terms") -}}
+    {{- $t = printf "%s（%s）" .Title (.Params.original | default .Data.Term) -}}
+  {{- end -}}
+  {{- $s = printf "%s｜%s" $t site.Title -}}
+{{- end -}}
+{{- return $s -}}

@@ -1,0 +1,7 @@
+{{- with .GetTerms "types" }}
+<span class="tags">
+  {{- range . }}
+  <a class="tag tag--{{ .Params.family | default "error" }}" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+  {{- end }}
+</span>
+{{- end }}

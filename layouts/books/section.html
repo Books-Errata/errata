@@ -1,0 +1,65 @@
+{{ define "main" }}
+{{- if .Parent.IsHome }}
+
+{{- /* 书目总览 */}}
+<div class="wrap">
+  <header class="page-head"><h1>{{ .Title }}</h1></header>
+  <div class="prose">{{ .Content }}</div>
+  <ul class="catalog">
+    {{- range partial "sort-books.html" .Sections }}
+    {{- $tl := partial "book-lang.html" . }}
+    <li class="catalog__item">
+      <a class="catalog__title" href="{{ .RelPermalink }}" lang="{{ $tl }}">{{ .Title }}</a>
+      {{- with .Params.original_title }}
+      <cite class="catalog__orig" lang="{{ $.Params.source_lang }}">{{ . }}</cite>
+      {{- end }}
+      <p class="catalog__meta" lang="{{ $tl }}">
+        {{- with .Params.translator }}<span>{{ . }} 译</span>{{ end -}}
+        {{- with .Params.publisher }}<span>{{ . }}</span>{{ end -}}
+        {{- /* 出版年取自 edition 中的第一个四位数字，即该版的出版年份 */ -}}
+        {{- with findRE `\d{4}` (.Params.edition | default "") 1 }}<span>{{ index . 0 }}年</span>{{ end -}}
+      </p>
+    </li>
+    {{- else }}
+    <li class="empty">暂无收录的书。</li>
+    {{- end }}
+  </ul>
+</div>
+
+{{- else }}
+
+{{- /* 单本书 */}}
+{{- $tl := partial "book-lang.html" . }}
+<div class="wrap">
+  <nav class="crumbs" aria-label="位置"><a href="{{ "books/" | relURL }}">书目</a></nav>
+  <article class="book" data-pagefind-body>
+    <header class="page-head">
+      <h1 lang="{{ $tl }}">{{ .Title }}</h1>
+    </header>
+    {{ partial "biblio.html" . }}
+    <span hidden data-pagefind-filter="书">{{ .Title }}</span>
+
+    <section class="entries" data-pagefind-ignore>
+      <h2>勘误条目</h2>
+      {{- with .RegularPages.ByWeight }}
+      <ul class="entry-list">
+        {{- range . }}{{ partial "entry-row.html" . }}{{ end }}
+      </ul>
+      {{- else }}
+      <p class="empty">暂无条目。</p>
+      {{- end }}
+    </section>
+
+    {{- /* 整体说明放在条目之后。正文中的二级标题由 render-heading.html 降为三级；
+           没有内容的小节由样式表隐藏，全部为空时整节隐藏。 */}}
+    {{- with .Content }}
+    <section class="book-notes">
+      <h2>整体说明</h2>
+      <div class="prose" lang="{{ $tl }}">{{ . }}</div>
+    </section>
+    {{- end }}
+  </article>
+</div>
+
+{{- end }}
+{{ end }}

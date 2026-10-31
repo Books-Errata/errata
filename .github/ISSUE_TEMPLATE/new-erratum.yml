@@ -1,0 +1,150 @@
+name: 提交新勘误
+description: 对照原文，提交中译本中的误译、漏译、专名与术语误识、可商榷之处，或删节与改写的对照。
+title: "[新勘误] "
+labels: ["新勘误"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢参与。提交之前，请先读一遍[收录原则与写作要求](https://errata.hone.ink/contribute/)。
+
+        标题请写成「[新勘误] 原文词语或位置（《书名》）」，例如「[新勘误] les Trente Glorieuses（《某书》）」。不确定怎么写也没关系，维护者会调整。
+
+  - type: input
+    id: book
+    attributes:
+      label: 中译本书名
+    validations:
+      required: true
+
+  - type: input
+    id: translator
+    attributes:
+      label: 译者
+    validations:
+      required: true
+
+  - type: input
+    id: publisher
+    attributes:
+      label: 出版社
+    validations:
+      required: true
+
+  - type: input
+    id: edition
+    attributes:
+      label: 版次与印次
+      description: 见版权页。不同印次的文字可能不同，所以印次不能省略。
+      placeholder: 2020年1月第1版，2021年3月第3次印刷
+    validations:
+      required: true
+
+  - type: input
+    id: original
+    attributes:
+      label: 原书名与所据版本
+      description: 你对照的原书是哪个出版社、哪一年的版本。
+      placeholder: The Origins of Totalitarianism, Penguin Classics, 2017
+    validations:
+      required: true
+
+  - type: input
+    id: page_cn
+    attributes:
+      label: 中译本页码
+    validations:
+      required: true
+
+  - type: input
+    id: page_orig
+    attributes:
+      label: 原书页码
+      description: 电子书没有页码时，写章节和段落位置。
+    validations:
+      required: true
+
+  - type: textarea
+    id: source_text
+    attributes:
+      label: 原文
+      description: 以说明问题所需为限，一般不超过一两句。成段的删节可以概述内容，只引说明位置所需的一两句。
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: 现译
+      description: 中译本对应位置的文字，一般不超过一两句。如果译本此处没有对应文字，请写明。
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题
+      description: |
+        说明译文与原文的出入。只针对文本，不评价译者，不推测成因。
+        如果是删节与改写，这里写「对照说明」：并列说明差异，不使用「问题」「错误」等词。
+        如果是可商榷，这里写为何另有考虑。
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 建议
+      description: 建议的译法。把握不足时如实说明。删节与改写对照可以不填。
+    validations:
+      required: false
+
+  - type: textarea
+    id: basis
+    attributes:
+      label: 依据
+      description: 可核对的依据，例如词典及义项、原始出处、通行译名、上下文。删节与改写对照可写所核对的原书版本。
+    validations:
+      required: true
+
+  - type: dropdown
+    id: types
+    attributes:
+      label: 类型
+      description: 前三类可以并选；「可商榷」「删节与改写对照」单独使用。不确定就选「不确定」，维护者会再确认。
+      multiple: true
+      options:
+        - 误译
+        - 漏译
+        - 专名与术语误识
+        - 可商榷
+        - 删节与改写对照
+        - 不确定
+    validations:
+      required: true
+
+  - type: input
+    id: terms
+    attributes:
+      label: 涉及的术语（可选）
+      description: 如果这个问题涉及某个在多本书中都可能出现的术语，写在这里，例如 totalitarianism。
+    validations:
+      required: false
+
+  - type: input
+    id: credit
+    attributes:
+      label: 署名（可选）
+      description: 希望在贡献者名单中显示的名字。条目本身不署名。不填则不列名。
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: agreement
+    attributes:
+      label: 确认
+      options:
+        - label: 我同意以 CC BY-SA 4.0 授权本站使用我撰写的说明文字。
+          required: true
+        - label: 我已阅读收录原则与写作要求，并按要求撰写。
+          required: true

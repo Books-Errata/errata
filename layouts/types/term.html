@@ -1,0 +1,20 @@
+{{ define "main" }}
+{{- $f := .Params.family | default "error" }}
+<div class="wrap">
+  <nav class="crumbs" aria-label="位置"><a href="{{ "types/" | relURL }}">类型</a></nav>
+  <article data-pagefind-body>
+    <header class="page-head">
+      <h1>{{ .Title }}</h1>
+      <p class="page-head__note">
+        <span class="tag tag--{{ $f }}">{{ if eq $f "error" }}可以查证的错误{{ else }}不称为错误{{ end }}</span>
+        <span class="slug" lang="en">{{ .Data.Term }}</span>
+      </p>
+    </header>
+    <div class="prose">{{ .Content }}</div>
+    <section class="entries" data-pagefind-ignore>
+      <h2>条目</h2>
+      {{ partial "grouped-by-book.html" .Pages }}
+    </section>
+  </article>
+</div>
+{{ end }}

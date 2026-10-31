@@ -1,0 +1,5 @@
+{{- /* 「现译……，建议……」对照；两项都有时才显示 */ -}}
+{{- $tl := partial "book-lang.html" .CurrentSection -}}
+{{- with and .Params.current .Params.suggested }}
+<p class="contrast">现译「<span lang="{{ $tl }}">{{ $.Params.current }}</span>」，建议「<span lang="{{ $tl }}">{{ $.Params.suggested }}</span>」</p>
+{{- end }}

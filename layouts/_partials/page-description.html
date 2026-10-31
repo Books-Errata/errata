@@ -1,0 +1,9 @@
+{{- /* 返回 meta description 文本 */ -}}
+{{- $s := .Description | default site.Params.description -}}
+{{- if and (eq .Kind "page") (eq .Section "books") -}}
+  {{- $s = printf "《%s》中译本第%s页。" .CurrentSection.Title (.Params.page_cn | default (string .Weight)) -}}
+  {{- with and .Params.current .Params.suggested -}}
+    {{- $s = printf "%s现译「%s」，建议「%s」。" $s $.Params.current $.Params.suggested -}}
+  {{- end -}}
+{{- end -}}
+{{- return $s -}}

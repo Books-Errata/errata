@@ -1,0 +1,8 @@
+{{- /* 输入书的 section 列表，按 sort_title（无则书名）排序后返回 */ -}}
+{{- $items := slice -}}
+{{- range . -}}
+  {{- $items = $items | append (dict "key" (lower (.Params.sort_title | default .Title)) "book" .) -}}
+{{- end -}}
+{{- $out := slice -}}
+{{- range sort $items "key" -}}{{- $out = $out | append .book -}}{{- end -}}
+{{- return $out -}}

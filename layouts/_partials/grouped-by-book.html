@@ -1,0 +1,28 @@
+{{- /* 输入一组条目，按书分组、书按书名排序、条目按页码排序 */ -}}
+{{- $pages := . -}}
+{{- $seen := slice -}}
+{{- $books := slice -}}
+{{- range $pages -}}
+  {{- $b := .CurrentSection -}}
+  {{- if not (in $seen $b.Path) -}}
+    {{- $seen = $seen | append $b.Path -}}
+    {{- $books = $books | append $b -}}
+  {{- end -}}
+{{- end -}}
+{{- range partial "sort-books.html" $books }}
+{{- $b := . }}
+<section class="book-group">
+  <h3 class="book-group__title"><a href="{{ $b.RelPermalink }}" lang="{{ partial "book-lang.html" $b }}">《{{ $b.Title }}》</a></h3>
+  <p class="book-group__meta" lang="{{ partial "book-lang.html" $b }}">
+    {{- with $b.Params.translator }}<span>{{ . }} 译</span>{{ end -}}
+    {{- with $b.Params.publisher }}<span>{{ . }}</span>{{ end -}}
+  </p>
+  <ul class="entry-list">
+    {{- range $pages.ByWeight }}
+      {{- if eq .CurrentSection.Path $b.Path }}{{ partial "entry-row.html" . }}{{ end }}
+    {{- end }}
+  </ul>
+</section>
+{{- else }}
+<p class="empty">暂无条目。</p>
+{{- end }}
