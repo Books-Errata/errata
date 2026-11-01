@@ -1,7 +1,10 @@
 <header class="site-header">
   <div class="wrap site-header__inner">
     <a class="site-name" href="{{ "/" | relURL }}">{{ site.Title }}</a>
-    <nav class="site-nav" aria-label="主导航">
+    <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="菜单">
+      <span class="nav-toggle__bars" aria-hidden="true"></span>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="主导航">
       <ul>
       {{- range site.Menus.main }}
         {{- $here := eq $.RelPermalink .URL }}
@@ -12,3 +15,22 @@
     </nav>
   </div>
 </header>
+<script>
+(function () {
+  /* 窄屏下的汉堡菜单。没有 JavaScript 时按钮不显示，导航照常平铺。 */
+  var btn = document.querySelector(".nav-toggle");
+  var nav = document.getElementById("site-nav");
+  if (!btn || !nav) return;
+  function isOpen() { return btn.getAttribute("aria-expanded") === "true"; }
+  function setOpen(open) { btn.setAttribute("aria-expanded", open ? "true" : "false"); }
+  btn.addEventListener("click", function () { setOpen(!isOpen()); });
+  /* Esc 关闭并把焦点还给按钮 */
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && isOpen()) { setOpen(false); btn.focus(); }
+  });
+  /* 点页头以外的地方关闭 */
+  document.addEventListener("click", function (e) {
+    if (isOpen() && !btn.closest(".site-header").contains(e.target)) setOpen(false);
+  });
+})();
+</script>

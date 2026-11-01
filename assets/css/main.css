@@ -166,6 +166,36 @@ cite:lang(ja), cite:lang(zh), cite:lang(ko) { font-style: normal; }
   text-decoration-thickness: 2px;
 }
 
+/* 汉堡按钮：只在窄屏且 JavaScript 可用时出现（见「窄屏」一节）。
+   三道横线由一个 span 和它的前后伪元素组成，展开时变成叉号。 */
+.nav-toggle { display: none; }
+.nav-toggle__bars,
+.nav-toggle__bars::before,
+.nav-toggle__bars::after {
+  display: block;
+  width: 1.3rem;
+  height: 2px;
+  background: currentColor;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.nav-toggle__bars { position: relative; }
+.nav-toggle__bars::before,
+.nav-toggle__bars::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+.nav-toggle__bars::before { top: -7px; }
+.nav-toggle__bars::after { top: 7px; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars { background-color: transparent; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars::before { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars::after { transform: translateY(-7px) rotate(-45deg); }
+@media (prefers-reduced-motion: reduce) {
+  .nav-toggle__bars,
+  .nav-toggle__bars::before,
+  .nav-toggle__bars::after { transition: none; }
+}
+
 .site-footer {
   margin-top: 5rem;
   padding: 1.5rem 0 2.5rem;
@@ -657,6 +687,46 @@ a.tag--non-error:hover { color: var(--dai); }
 
 @media (max-width: 34rem) {
   html { font-size: 100%; }
+
+  /* 页头：站名放大，导航收进汉堡菜单 */
+  .site-header__inner {
+    align-items: center;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  .site-name {
+    font-size: 1.35rem;
+    line-height: 1.4;
+  }
+  .js .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;          /* 44px 触控区 */
+    height: 2.75rem;
+    margin: -0.4rem -0.7rem -0.4rem 0; /* 图标与正文右缘对齐，且不撑高页头 */
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .js .site-nav {
+    display: none;
+    flex-basis: 100%;
+  }
+  .js .nav-toggle[aria-expanded="true"] + .site-nav { display: block; }
+  .js .site-nav ul {
+    flex-direction: column;
+    gap: 0;
+    font-size: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+  .js .site-nav li + li { border-top: 1px solid var(--rule); }
+  .js .site-nav a {
+    display: block;
+    padding: 0.7rem 0;
+  }
   .page-head h1 { font-size: 1.65rem; }
   .prose { text-align: start; }
   .entry-row { grid-template-columns: 1fr; }
@@ -668,7 +738,7 @@ a.tag--non-error:hover { color: var(--dai); }
 /* 打印 ------------------------------------------------------------ */
 
 @media print {
-  .site-nav, .skip-link, .search-form, .entry-foot .fix-link { display: none; }
+  .site-nav, .nav-toggle, .skip-link, .search-form, .entry-foot .fix-link { display: none !important; }
   body { background: #fff; color: #000; }
   .site-footer { margin-top: 2rem; }
 }
