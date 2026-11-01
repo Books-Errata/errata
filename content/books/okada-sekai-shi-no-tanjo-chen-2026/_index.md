@@ -8,7 +8,7 @@ publisher: 八旗文化
 edition: 2026年4月，二版一刷
 original_edition: CHIKUMASHOBO LTD. Tokyo, 1999
 source_lang: ja
-translation_lang: zh-Hans
+translation_lang: zh-Hant
 ---
 
 ### 阅读范围
