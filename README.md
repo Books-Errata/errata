@@ -1,4 +1,4 @@
-# 推敲·译著勘误
+# 推敲・译著勘误
 
 https://errata.hone.ink
 

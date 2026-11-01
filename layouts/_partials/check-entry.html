@@ -96,6 +96,22 @@
   {{- warnf "%s：「%s」小节还没有内容，页面上暂不显示" $f (index . 1) -}}
 {{- end -}}
 
+{{- /* 间隔号：本站自己写的文字统一用「・」（U+30FB）。
+       原文、现译两节是引文，照录原文，不检查；suggested 和中文标题是本站的文字，检查。 */ -}}
+{{- $dots := `[·‧•･∙]` -}}
+{{- range $field := slice "title" "suggested" -}}
+  {{- with index $.Params $field -}}
+    {{- if findRE $dots . 1 -}}
+      {{- warnf "%s：%s 中的间隔号请改用「・」" $f $field -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- range findRESubmatch `(?s)<section class="entry-sec entry-sec--(\w+)">\s*<h2 id="[^"]*">([^<]*)</h2>(.*?)</section>` (printf "<section class=\"entry-sec entry-sec--lead\">%s</section>" $content) -}}
+  {{- if and (not (in (slice "orig" "current") (index . 1))) (findRE $dots (index . 3) 1) -}}
+    {{- warnf "%s：「%s」小节中有半角间隔号，请改用「・」（引用现译的除外）" $f (index . 2) -}}
+  {{- end -}}
+{{- end -}}
+
 {{- /* 术语：术语功能启用后，检查术语页是否存在 */ -}}
 {{- if isset site.Taxonomies "terms" -}}
   {{- range .Params.terms -}}

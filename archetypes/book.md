@@ -3,7 +3,7 @@
 title: ""                   # 中译本书名
 sort_title: ""              # 书名拼音（小写，不带声调），用于书目排序；留空则按书名排序
 original_title: ""          # 原书名，按原语言规范书写
-author: ""                  # 原作者
+author: ""                  # 原作者，如「艾莉森・高普尼克（Alison Gopnik）」；间隔号用「・」
 translator: ""
 publisher: ""
 edition: ""                 # 中译本版次与印次，如「2020年1月第1版，2021年3月第3次印刷」

@@ -20,6 +20,7 @@ hasCJKLanguage = true
 
 [taxonomies]
   type = 'types'
+  # 术语页暂未上线。上线时取消下一行注释，并删去 content/terms/_index.md 中的 build 设置
   # term = 'terms'
 
 # 「最后修订」取 Git 提交时间；本地未提交时退回文件修改时间
@@ -30,13 +31,10 @@ hasCJKLanguage = true
   # 不自动替换引号、破折号和省略号，原文引文保持原样
   disable = true
 
+# 允许在标题后写 {#id} 指定锚点，about.md、contribute.md 里用到了（如 {#principles}）
 [markup.goldmark.parser.attribute]
   block = false
   title = true
-
-[markup.tableOfContents]
-  startLevel = 2
-  endLevel = 3
 
 [params]
   description = '记录各类中文译著里的翻译错误，且读且记且更正。'
@@ -44,31 +42,34 @@ hasCJKLanguage = true
   branch = 'main'
   email = 'errata@hone.ink'
 
+# 主导航。weight 决定顺序
 [[menus.main]]
   name = '首页'
   pageRef = '/'
   weight = 10
+
 [[menus.main]]
   name = '书目'
   pageRef = '/books'
   weight = 20
-  # [[menus.main]]
+
+# 术语页上线时取消注释，并在上方 [taxonomies] 中启用 term
+# [[menus.main]]
 #   name = '术语'
 #   pageRef = '/terms'
 #   weight = 30
+
 [[menus.main]]
   name = '类型'
   pageRef = '/types'
   weight = 40
-  [[menus.main]]
+
+[[menus.main]]
   name = '参与贡献'
   pageRef = '/contribute'
   weight = 50
+
 [[menus.main]]
   name = '关于'
   pageRef = '/about'
   weight = 60
-
-
-[caches.images]
-  dir = ':cacheDir/images'

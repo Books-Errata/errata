@@ -16,6 +16,14 @@
     {{- warnf "%s：原书语言代码「%s」不在 lang-name.html 的列表里，页面会直接显示代码" $f . -}}
   {{- end -}}
 {{- end -}}
+{{- /* 间隔号：本站统一用「・」（U+30FB） */ -}}
+{{- range $field := slice "author" "translator" -}}
+  {{- with index $.Params $field -}}
+    {{- if findRE `[·‧•･∙]` . 1 -}}
+      {{- warnf "%s：%s 中的间隔号请改用「・」" $f $field -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
 {{- $missing := slice -}}
 {{- range slice "original_title" "author" "translator" "publisher" "edition" "original_edition" "source_lang" -}}
   {{- if not (index $.Params .) }}{{ $missing = $missing | append . }}{{ end -}}
