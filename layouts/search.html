@@ -1,38 +1,102 @@
 {{ define "main" }}
+{{- /* 搜索页，用 Pagefind 的 Component UI（1.5 起取代旧的 PagefindUI）。
+       组件有自己的样式隔离，配色和字体通过 main.css 里的 --pf-* 变量设置；
+       结果条目由下面的脚本生成，用的是站内的样式。 */}}
 <div class="wrap">
   <header class="page-head"><h1>{{ .Title }}</h1></header>
-  <div id="search" class="search"></div>
+  <div id="search" class="search">
+    <pagefind-input placeholder="搜索原文、译文或说明"></pagefind-input>
+    <div class="search__filters">
+      <pagefind-filter-dropdown filter="书" label="书" hide-clear></pagefind-filter-dropdown>
+      <pagefind-filter-dropdown filter="类型" label="类型" hide-clear></pagefind-filter-dropdown>
+    </div>
+    <pagefind-summary></pagefind-summary>
+    <pagefind-results></pagefind-results>
+  </div>
   <p class="search-note" id="search-missing" hidden>搜索索引尚未生成。本地预览时，请先运行 <code>hugo</code>，再运行 <code>npx pagefind --site public --serve</code>，详见 README。</p>
   <noscript><p class="search-note">搜索需要启用 JavaScript。也可以按<a href="{{ "books/" | relURL }}">书</a>、<a href="{{ "types/" | relURL }}">类型</a>浏览。</p></noscript>
 </div>
-<link rel="stylesheet" href="{{ "pagefind/pagefind-ui.css" | relURL }}">
-<script src="{{ "pagefind/pagefind-ui.js" | relURL }}"></script>
-<script>
-(function () {
-  if (typeof PagefindUI === "undefined") {
-    document.getElementById("search-missing").hidden = false;
-    return;
-  }
-  var ui = new PagefindUI({
-    element: "#search",
-    showImages: false,
-    showSubResults: true,
-    translations: {
-      placeholder: "搜索原文、译文或说明",
-      clear_search: "清除",
-      load_more: "显示更多结果",
-      search_label: "搜索本站",
-      filters_label: "筛选",
-      zero_results: "没有找到与「[SEARCH_TERM]」相关的结果",
-      many_results: "找到 [COUNT] 条与「[SEARCH_TERM]」相关的结果",
-      one_result: "找到 [COUNT] 条与「[SEARCH_TERM]」相关的结果",
-      alt_search: "没有找到与「[SEARCH_TERM]」相关的结果，以下是与「[DIFFERENT_TERM]」相关的结果",
-      search_suggestion: "没有找到与「[SEARCH_TERM]」相关的结果，可以换一个词再试",
-      searching: "正在搜索「[SEARCH_TERM]」……"
-    }
+<link rel="stylesheet" href="{{ "pagefind/pagefind-component-ui.css" | relURL }}">
+<script type="module" src="{{ "pagefind/pagefind-component-ui.js" | relURL }}"></script>
+<script type="module">
+const pf = window.PagefindComponents;
+if (!pf) {
+  document.getElementById("search").hidden = true;
+  document.getElementById("search-missing").hidden = false;
+} else {
+  const instance = pf.getInstanceManager().getInstance("default");
+  instance.setTranslations({
+    placeholder: "搜索原文、译文或说明",
+    clear_search: "清除",
+    load_more: "显示更多结果",
+    search_label: "搜索本站",
+    filters_label: "筛选",
+    zero_results: "没有找到与「[SEARCH_TERM]」相关的结果",
+    many_results: "找到 [COUNT] 条与「[SEARCH_TERM]」相关的结果",
+    one_result: "找到 [COUNT] 条与「[SEARCH_TERM]」相关的结果",
+    total_zero_results: "没有结果",
+    total_one_result: "共 [COUNT] 条结果",
+    total_many_results: "共 [COUNT] 条结果",
+    alt_search: "没有找到与「[SEARCH_TERM]」相关的结果，以下是与「[DIFFERENT_TERM]」相关的结果",
+    search_suggestion: "没有找到与「[SEARCH_TERM]」相关的结果，可以换一个词再试",
+    searching: "正在搜索「[SEARCH_TERM]」……",
+    results_label: "搜索结果",
+    keyboard_navigate: "移动",
+    keyboard_select: "打开",
+    keyboard_clear: "清除",
+    keyboard_close: "关闭",
+    keyboard_search: "搜索",
+    error_search: "搜索出错",
+    filter_selected_one: "已选 [COUNT] 项",
+    filter_selected_many: "已选 [COUNT] 项",
+    input_hint: "输入时即显示结果",
+    loading: "加载中"
   });
-  var q = new URLSearchParams(window.location.search).get("q");
-  if (q) ui.triggerSearch(q);
-})();
+
+  /* 结果条目：标题、摘要，以及最多三个命中的小节（如「原文」「问题」）。
+     摘要里的 <mark> 由 Pagefind 生成，其余文字一律按纯文本写入。 */
+  const el = (tag, cls, text) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  };
+  const results = document.querySelector("pagefind-results");
+  results.resultTemplate = (r) => {
+    const li = el("li", "search-result");
+    const title = el("p", "search-result__title");
+    const a = el("a", null, (r.meta && r.meta.title) || r.url);
+    a.href = (r.meta && r.meta.url) || r.url;
+    title.append(a);
+    li.append(title);
+    if (r.excerpt) {
+      const ex = el("p", "search-result__excerpt");
+      ex.innerHTML = r.excerpt;
+      li.append(ex);
+    }
+    const subs = (r.sub_results || []).filter((s) => s.url !== r.url).slice(0, 3);
+    if (subs.length) {
+      const ul = el("ul", "search-result__subs");
+      for (const s of subs) {
+        const sli = el("li");
+        const sa = el("a", null, s.title);
+        sa.href = s.url;
+        sli.append(sa);
+        if (s.excerpt) {
+          const sex = el("span", "search-result__excerpt");
+          sex.innerHTML = s.excerpt;
+          sli.append("：", sex);
+        }
+        ul.append(sli);
+      }
+      li.append(ul);
+    }
+    return li;
+  };
+
+  /* 首页搜索框跳转过来时带 ?q= */
+  const q = new URLSearchParams(window.location.search).get("q");
+  if (q) instance.triggerSearch(q);
+}
 </script>
 {{ end }}

@@ -29,6 +29,7 @@
 {{- else }}
 
 {{- /* 单本书 */}}
+{{- partial "check-book.html" . }}
 {{- $tl := partial "book-lang.html" . }}
 <div class="wrap">
   <nav class="crumbs" aria-label="位置"><a href="{{ "books/" | relURL }}">书目</a></nav>

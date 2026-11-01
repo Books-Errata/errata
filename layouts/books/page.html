@@ -1,4 +1,5 @@
 {{ define "main" }}
+{{- partial "check-entry.html" . }}
 {{- $book := .CurrentSection }}
 {{- $tl := partial "book-lang.html" $book }}
 {{- $revised := in (slice "已修订" "已修訂") .Params.status }}

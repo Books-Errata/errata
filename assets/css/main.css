@@ -666,21 +666,75 @@ a.tag--non-error:hover { color: var(--dai); }
   cursor: pointer;
 }
 
-.search .pagefind-ui {
-  --pagefind-ui-scale: 0.9;
-  --pagefind-ui-primary: var(--dai);
-  --pagefind-ui-text: var(--ink);
-  --pagefind-ui-background: var(--field);
-  --pagefind-ui-border: var(--rule);
-  --pagefind-ui-tag: var(--rule);
-  --pagefind-ui-border-width: 1px;
-  --pagefind-ui-border-radius: 2px;
-  --pagefind-ui-font: var(--sans);
+/* 搜索页：Pagefind 组件有样式隔离，只能通过 --pf-* 变量调整。
+   这些变量引用站内配色，深色模式随之切换。结果条目由 search.html 生成，用站内样式。 */
+.search {
+  --pf-text: var(--ink);
+  --pf-text-secondary: var(--muted);
+  --pf-text-muted: var(--muted);
+  --pf-background: var(--field);
+  --pf-border: var(--rule);
+  --pf-border-focus: var(--muted);
+  --pf-hover: var(--tint);
+  --pf-skeleton: var(--tint);
+  --pf-skeleton-shine: var(--paper);
+  --pf-mark: var(--ink);
+  --pf-outline-focus: var(--dai);
+  --pf-font: var(--sans);
+  --pf-input-height: 2.6rem;
+  --pf-input-font-size: 16px; /* 不小于 16px，避免 iOS 聚焦时放大页面 */
+  --pf-summary-font-size: 0.85rem;
+  --pf-border-radius: 2px;
+  --pf-shadow-sm: none;
+  --pf-results-gap: 0;
+  margin-top: 2rem;
 }
-.search .pagefind-ui__result-title { font-family: var(--serif); }
-.search .pagefind-ui__result-excerpt { font-family: var(--serif); }
-.search .pagefind-ui__result-excerpt mark,
-.search .pagefind-ui__result-title mark {
+.search__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+/* Pagefind 在 640px 以下把筛选菜单加宽，并以各自的按钮为中心对齐，
+   靠左的按钮会让菜单伸出屏幕。这里改为以整行筛选为准定位、与之等宽。
+   组件样式的优先级很高，只能用 !important。 */
+@media (max-width: 640px) {
+  .search__filters { position: relative; }
+  .search__filters pagefind-filter-dropdown,
+  .search__filters .pf-dropdown-wrapper {
+    position: static !important;
+    contain: none !important;
+  }
+  .search__filters .pf-dropdown-menu {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+.search pagefind-summary {
+  display: block;
+  margin-bottom: 0.6rem;
+}
+.search-result {
+  list-style: none;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--serif);
+  line-height: 1.75;
+}
+.search-result:first-child { border-top: 1px solid var(--rule); }
+.search-result p { margin: 0; }
+.search-result__title { font-size: 1.05rem; font-weight: 700; }
+.search-result__title a { text-decoration: none; }
+.search-result__title a:hover { text-decoration: underline; }
+.search-result__excerpt { color: var(--muted); font-size: 0.95rem; }
+.search-result__subs {
+  margin: 0.4rem 0 0;
+  padding: 0 0 0 1em;
+  list-style: none;
+  font-size: 0.9rem;
+}
+.search-result__subs a { font-family: var(--sans); color: var(--ink); }
+.search-result mark {
   background: var(--mark);
   color: inherit;
 }

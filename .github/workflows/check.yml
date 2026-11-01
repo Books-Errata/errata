@@ -1,0 +1,69 @@
+# 检查 pull request：构建站点（条目与书目检查在构建时进行），再检查站内链接。
+# 只检查，不部署。构建中的警告会标注在 PR 的「Files changed」页面上。
+
+name: 检查
+
+env:
+  TZ: Asia/Shanghai
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 读取 Hugo 版本
+        run: |
+          v=$(sed -n "s/^[[:space:]]*min[[:space:]]*=[[:space:]]*['\"]\([0-9.]*\)['\"].*/\1/p" hugo.toml | head -n1)
+          test -n "$v" || { echo "::error::hugo.toml 中没有找到 [module.hugoVersion] min"; exit 1; }
+          echo "HUGO_VERSION=$v" >> "$GITHUB_ENV"
+
+      - name: 安装 Hugo
+        run: |
+          mkdir -p "${HOME}/.local/hugo"
+          curl -sfL --output-dir "${{ runner.temp }}" -O \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_linux-amd64.tar.gz"
+          tar -C "${HOME}/.local/hugo" -xf "${{ runner.temp }}/hugo_${HUGO_VERSION}_linux-amd64.tar.gz"
+          echo "${HOME}/.local/hugo" >> "${GITHUB_PATH}"
+
+      - name: 配置 Git
+        run: git config --global core.quotepath false
+
+      - name: 构建站点并检查条目
+        run: |
+          hugo version
+          hugo build --logLevel warn --cacheDir "${{ runner.temp }}/.cache/hugo" 2>&1 | tee "${{ runner.temp }}/build.log"
+
+      - name: 标注构建警告
+        if: always()
+        run: |
+          # Hugo 的警告形如「WARN  path：说明」，转成 GitHub 注释，显示在对应文件上
+          grep '^WARN' "${{ runner.temp }}/build.log" | sed -E 's/^WARN +//' | while IFS= read -r line; do
+            file="${line%%：*}"
+            if [ "$file" != "$line" ] && [ -f "content/$file" ]; then
+              echo "::warning file=content/${file}::${line#*：}"
+            else
+              echo "::warning::${line}"
+            fi
+          done || true
+
+      - name: 检查站内链接
+        run: python3 .github/scripts/check-links.py public

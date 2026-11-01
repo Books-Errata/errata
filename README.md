@@ -18,7 +18,7 @@ https://errata.hone.ink
 
 ## 本地预览
 
-需要 [Hugo](https://gohugo.io/) 0.166.0，与部署流程使用的版本一致。
+需要 [Hugo](https://gohugo.io/)，版本见 `hugo.toml` 中的 `[module.hugoVersion]`；部署和检查流程都从那里读取版本号。
 
 ```bash
 hugo server --cleanDestinationDir

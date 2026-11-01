@@ -3,8 +3,8 @@
 
 name: 构建并部署
 
+# Hugo 版本取自 hugo.toml 的 [module.hugoVersion]，见「读取 Hugo 版本」一步
 env:
-  HUGO_VERSION: 0.166.0     # 与本地保持一致
   PAGEFIND_VERSION: 1.5.2
   NODE_VERSION: "24"
   TZ: Asia/Shanghai
@@ -38,6 +38,12 @@ jobs:
           # 取完整历史，「最后修订」时间才准确
           fetch-depth: 0
 
+      - name: 读取 Hugo 版本
+        run: |
+          v=$(sed -n "s/^[[:space:]]*min[[:space:]]*=[[:space:]]*['\"]\([0-9.]*\)['\"].*/\1/p" hugo.toml | head -n1)
+          test -n "$v" || { echo "::error::hugo.toml 中没有找到 [module.hugoVersion] min"; exit 1; }
+          echo "HUGO_VERSION=$v" >> "$GITHUB_ENV"
+
       - name: 配置 Pages
         id: pages
         uses: actions/configure-pages@v6
@@ -66,6 +72,9 @@ jobs:
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
             --cacheDir "${{ runner.temp }}/.cache/hugo"
+
+      - name: 检查站内链接
+        run: python3 .github/scripts/check-links.py public
 
       - name: 生成搜索索引
         run: npx --yes "pagefind@${PAGEFIND_VERSION}" --site public

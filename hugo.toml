@@ -9,6 +9,11 @@ disableKinds = ['rss']
 enableGitInfo = true
 hasCJKLanguage = true
 
+# Hugo 版本。本地版本低于此，构建时会给出警告；GitHub Actions 也从这里读取版本号安装 Hugo，
+# 升级时只改这一处
+[module.hugoVersion]
+  min = '0.166.0'
+
 [languages.zh-hans]
   locale = 'zh-Hans'
   weight = 1

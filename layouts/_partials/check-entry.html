@@ -1,0 +1,101 @@
+{{- /*
+  条目检查：在构建时核对 front matter 和正文结构，规则同 CONTRIBUTING.md 与 PR 模板。
+  errorf：构建失败，必须改；warnf：只提示，构建照常完成。
+  由 books/page.html 调用，不输出任何内容。
+*/ -}}
+{{- $f := .File.Path -}}
+
+{{- /* 标题 */ -}}
+{{- if not .Title -}}
+  {{- errorf "%s：缺少 title" $f -}}
+{{- end -}}
+
+{{- /* 类型 */ -}}
+{{- $known := slice "mistranslation" "omission" "proper-noun" "debatable" "abridgment" -}}
+{{- $solo := slice "debatable" "abridgment" -}}
+{{- $types := slice -}}
+{{- with .Params.types }}{{ $types = . }}{{ end -}}
+{{- if not $types -}}
+  {{- errorf "%s：缺少 types" $f -}}
+{{- end -}}
+{{- range $types -}}
+  {{- if not (in $known .) -}}
+    {{- errorf "%s：未知类型「%s」，可用的类型：%s" $f . (delimit $known "、") -}}
+  {{- end -}}
+  {{- if and (in $solo .) (gt (len $types) 1) -}}
+    {{- errorf "%s：「%s」只能单独使用，不能与其他类型并用" $f . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* 核实：必须是布尔值。写成字符串 "false" 会被当作「已核实」 */ -}}
+{{- if isset .Params "verified" -}}
+  {{- if ne (printf "%T" .Params.verified) "bool" -}}
+    {{- errorf "%s：verified 必须是 true 或 false，不加引号" $f -}}
+  {{- end -}}
+{{- else -}}
+  {{- warnf "%s：缺少 verified，按「待核实」处理" $f -}}
+{{- end -}}
+
+{{- /* 状态 */ -}}
+{{- with .Params.status -}}
+  {{- if not (in (slice "未修订" "已修订" "未修訂" "已修訂") .) -}}
+    {{- errorf "%s：status 只能是「未修订」或「已修订」，现为「%s」" $f . -}}
+  {{- end -}}
+  {{- if and (in (slice "已修订" "已修訂") .) (not $.Params.revised_in) -}}
+    {{- warnf "%s：已修订，但 revised_in 没有注明哪一印" $f -}}
+  {{- end -}}
+{{- else -}}
+  {{- warnf "%s：缺少 status" $f -}}
+{{- end -}}
+
+{{- /* 页码 */ -}}
+{{- $pageCN := string (.Params.page_cn | default "") -}}
+{{- if not $pageCN -}}
+  {{- warnf "%s：缺少中译本页码 page_cn" $f -}}
+{{- else if findRE `^\d+$` $pageCN 1 -}}
+  {{- if ne (int $pageCN) .Weight -}}
+    {{- warnf "%s：weight（%d）与 page_cn（%s）不一致，列表排序会出错" $f .Weight $pageCN -}}
+  {{- end -}}
+{{- end -}}
+{{- if eq .Weight 0 -}}
+  {{- warnf "%s：weight 为 0，条目会排在最前" $f -}}
+{{- end -}}
+{{- if and (not .Params.page_orig) (not (in $types "abridgment")) -}}
+  {{- warnf "%s：缺少原书页码 page_orig" $f -}}
+{{- end -}}
+
+{{- /* 现译与建议的简短形式：两项都有才显示对照 */ -}}
+{{- if or (and .Params.current (not .Params.suggested)) (and .Params.suggested (not .Params.current)) -}}
+  {{- warnf "%s：current 和 suggested 只填了一项，对照不会显示" $f -}}
+{{- end -}}
+
+{{- /* 正文小节。标题由 render-heading.html 输出为 <h2 id="…">标题</h2> */ -}}
+{{- $required := slice "原文" "现译" "问题" "建议" "依据" -}}
+{{- if in $types "debatable" -}}
+  {{- $required = slice "原文" "现译" "讨论" "建议" "依据" -}}
+{{- else if in $types "abridgment" -}}
+  {{- $required = slice "原文" "现译" "对照说明" -}}
+{{- end -}}
+{{- $hant := dict "现译" "現譯" "问题" "問題" "讨论" "討論" "建议" "建議" "依据" "依據" "对照说明" "對照說明" -}}
+{{- $content := string .Content -}}
+{{- $found := slice -}}
+{{- range findRESubmatch `<h2 id="[^"]*">([^<]*)</h2>` $content -}}
+  {{- $found = $found | append (index . 1) -}}
+{{- end -}}
+{{- range $required -}}
+  {{- if not (or (in $found .) (in $found (index $hant . | default .))) -}}
+    {{- errorf "%s：缺少「%s」小节" $f . -}}
+  {{- end -}}
+{{- end -}}
+{{- range findRESubmatch `<h2 id="[^"]*">([^<]*)</h2>\s*(?:</section>|$)` $content -}}
+  {{- warnf "%s：「%s」小节还没有内容，页面上暂不显示" $f (index . 1) -}}
+{{- end -}}
+
+{{- /* 术语：术语功能启用后，检查术语页是否存在 */ -}}
+{{- if isset site.Taxonomies "terms" -}}
+  {{- range .Params.terms -}}
+    {{- if not (site.GetPage (printf "/terms/%s" .)) -}}
+      {{- warnf "%s：术语「%s」还没有对应的术语页 content/terms/%s/_index.md" $f . . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

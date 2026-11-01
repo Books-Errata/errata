@@ -1,0 +1,25 @@
+{{- /*
+  书目检查：书目信息是否完整。errorf 让构建失败，warnf 只提示。
+  由 books/section.html 调用，不输出任何内容。
+*/ -}}
+{{- $f := .File.Path -}}
+{{- if not .Title -}}
+  {{- errorf "%s：缺少书名 title" $f -}}
+{{- end -}}
+{{- with .Params.translation_lang -}}
+  {{- if not (in (slice "zh-Hans" "zh-Hant") .) -}}
+    {{- errorf "%s：translation_lang 只能是 zh-Hans 或 zh-Hant，现为「%s」" $f . -}}
+  {{- end -}}
+{{- end -}}
+{{- with .Params.source_lang -}}
+  {{- if eq (partial "lang-name.html" .) . -}}
+    {{- warnf "%s：原书语言代码「%s」不在 lang-name.html 的列表里，页面会直接显示代码" $f . -}}
+  {{- end -}}
+{{- end -}}
+{{- $missing := slice -}}
+{{- range slice "original_title" "author" "translator" "publisher" "edition" "original_edition" "source_lang" -}}
+  {{- if not (index $.Params .) }}{{ $missing = $missing | append . }}{{ end -}}
+{{- end -}}
+{{- with $missing -}}
+  {{- warnf "%s：书目信息不完整，缺少 %s" $f (delimit . "、") -}}
+{{- end -}}

@@ -69,6 +69,7 @@ hugo new content --kind abridgment books/<书>/p145-xxx.md   # 删节与改写�
 | 字段 | 含义 |
 |---|---|
 | `title` | 条目标题，见下文「标题规则」 |
+| `title_lang` | 标题的语言，一般不用填；自动判断有误时才填，见下文「标题规则」 |
 | `weight` | 中译本页码，用于排序 |
 | `page_cn`、`page_orig` | 中译本页码、原书页码 |
 | `current` | 现译的简短形式，如「光荣特伦特」；长句条目留空 |
@@ -98,6 +99,8 @@ hugo new content --kind abridgment books/<书>/p145-xxx.md   # 删节与改写�
 3. 找不出单一症结：用原句开头几个词加省略号。
 4. 原句开头不足以辨认，或是漏译、删节等成段问题：用简短中性的中文描述，说明位置和内容，如「第五章论战后福利制度的一段」，不带判断。
 
+页面会自动标注标题的语言：不含汉字的标题按原书语言处理，含汉字的按中文处理；原书是日文、韩文时一律按原书语言处理。判断有误时（例如日文书用中文描述作标题），在 `title_lang` 中填写语言代码。
+
 ### 类型
 
 | slug | 名称 | 所属 |
@@ -114,6 +117,8 @@ hugo new content --kind abridgment books/<书>/p145-xxx.md   # 删节与改写�
 
 同一个术语在多本书中出现译法问题时，在条目的 `terms` 中填写它的英文 slug，例如 `terms: [totalitarianism]`。
 
+术语页暂未上线。现在可以先在条目中填写 `terms`，上线后会自动关联；不必新建术语页。以下是上线后的写法。
+
 新增术语时，在 `content/terms/` 下建一个以英文 slug 为名的目录，在其中写 `_index.md`：`title` 为通行中文译名，`original` 为原文形式，正文依次说明通行译法、与易混概念的区别、为何容易混淆，以及成因能否从现有材料判断。可参照 `content/terms/totalitarianism/_index.md`。
 
 ### 状态与核实
@@ -126,8 +131,8 @@ hugo new content --kind abridgment books/<书>/p145-xxx.md   # 删节与改写�
 
 1. Fork 本仓库，新建一个分支。
 2. 按上文新建或修改文件。
-3. 本地运行 `hugo server` 预览，确认页面正常；再运行 `hugo build`，确认没有报错。
-4. 提交 pull request，按模板中的自查清单逐项检查。如果对应某个 issue，在说明中写 `Closes #编号`。
+3. 本地运行 `hugo server` 预览，确认页面正常；再运行 `hugo build`。构建时会自动检查条目和书目：ERROR 表示必须修改，否则无法构建；WARN 是提示，例如小节还没写完、页码不一致，请尽量处理。
+4. 提交 pull request，按模板中的自查清单逐项检查。如果对应某个 issue，在说明中写 `Closes #编号`。提交后会自动构建并检查站内链接，警告会标注在对应的文件上。
 5. 希望署名的，在 `data/contributors.yaml` 中添加自己的名字。
 
 ## 维护者：处理 issue 与邮件
