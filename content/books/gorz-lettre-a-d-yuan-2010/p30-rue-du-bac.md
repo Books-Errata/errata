@@ -1,5 +1,6 @@
 ---
 title: rue du Bac
+date: 2026-10-31
 weight: 30
 page_cn: "30"
 page_orig: "46"

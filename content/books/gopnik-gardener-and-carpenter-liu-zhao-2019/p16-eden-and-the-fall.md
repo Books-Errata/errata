@@ -1,5 +1,6 @@
 ---
 title: Eden and the Fall
+date: 2026-11-01
 weight: 16
 page_cn: "16"
 page_orig: "20"

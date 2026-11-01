@@ -1,5 +1,6 @@
 ---
 title: totalitarian
+date: 2026-10-31
 weight: 34
 page_cn: "34"
 page_orig: "31"

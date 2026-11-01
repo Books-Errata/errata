@@ -1,5 +1,6 @@
 ---
 title: Taiwan was not recognized as a nation
+date: 2026-11-01
 weight: 
 page_cn: ""
 page_orig: ""

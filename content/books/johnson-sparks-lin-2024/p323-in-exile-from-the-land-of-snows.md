@@ -1,5 +1,6 @@
 ---
 title: In Exile from the Land of Snows
+date: 2026-11-01
 weight: 323
 page_cn: "323"
 page_orig: ""

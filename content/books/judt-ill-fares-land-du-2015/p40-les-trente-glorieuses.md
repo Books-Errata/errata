@@ -1,5 +1,6 @@
 ---
 title: Les Trente Glorieuses
+date: 2026-10-31
 weight: 40
 page_cn: "40"
 page_orig: "31"

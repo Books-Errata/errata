@@ -94,7 +94,16 @@ if (!pf) {
     return li;
   };
 
-  /* 首页搜索框跳转过来时带 ?q= */
+  /* 搜索词写回网址：结果可以分享，从条目页返回时也能恢复。
+     用 replaceState，不会每打一个字就多一条浏览记录。 */
+  instance.on("search", (term) => {
+    const url = new URL(window.location.href);
+    if (term) url.searchParams.set("q", term);
+    else url.searchParams.delete("q");
+    history.replaceState(null, "", url);
+  });
+
+  /* 带 ?q= 打开时（首页搜索框、分享的链接、返回）直接搜索 */
   const q = new URLSearchParams(window.location.search).get("q");
   if (q) instance.triggerSearch(q);
 }

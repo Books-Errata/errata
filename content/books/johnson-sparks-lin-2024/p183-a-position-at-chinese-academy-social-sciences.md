@@ -1,5 +1,6 @@
 ---
 title: a position at the Chinese Academy of Social Sciences
+date: 2026-11-01
 weight: 183
 page_cn: "183"
 page_orig: ""

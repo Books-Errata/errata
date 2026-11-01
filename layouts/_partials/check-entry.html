@@ -10,6 +10,11 @@
   {{- errorf "%s：缺少 title" $f -}}
 {{- end -}}
 
+{{- /* 收录日期 */ -}}
+{{- if .Date.IsZero -}}
+  {{- warnf "%s：缺少收录日期 date，不会出现在首页「最近收录」" $f -}}
+{{- end -}}
+
 {{- /* 类型 */ -}}
 {{- $known := slice "mistranslation" "omission" "proper-noun" "debatable" "abridgment" -}}
 {{- $solo := slice "debatable" "abridgment" -}}

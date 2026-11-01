@@ -1,5 +1,6 @@
 ---
 title: Writers Publishing House
+date: 2026-11-01
 weight: 198
 page_cn: "198"
 page_orig: ""

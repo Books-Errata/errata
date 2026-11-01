@@ -1,5 +1,6 @@
 ---
 title: Nanjing’s Foreign Language School
+date: 2026-11-01
 weight: 149
 page_cn: "149"
 page_orig: ""

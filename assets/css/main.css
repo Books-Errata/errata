@@ -625,6 +625,12 @@ a.tag--non-error:hover { color: var(--dai); }
   color: var(--muted);
 }
 .home__intro { font-size: 1.05rem; }
+.home__stats {
+  margin: -0.4rem 0 0;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
 
 .ways { margin-top: 2.6rem; }
 .ways > div {
@@ -635,6 +641,40 @@ a.tag--non-error:hover { color: var(--dai); }
 }
 .ways dt { font-size: 1.1rem; font-weight: 700; }
 .ways dd { margin: 0; }
+
+/* 首页「最近收录」 */
+.recent { margin-top: 2.8rem; }
+.recent > h2 {
+  margin: 0 0 0.6rem;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.recent__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+.recent__item {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  gap: 0 1rem;
+  align-items: baseline;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.recent__date {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.recent__book {
+  margin-left: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
 
 /* 搜索 ------------------------------------------------------------ */
 
@@ -790,6 +830,7 @@ a.tag--non-error:hover { color: var(--dai); }
   .entry-row__page { text-align: left; padding-top: 0; }
   .facts > div { grid-template-columns: 4.8em 1fr; }
   .ways > div { grid-template-columns: 1fr; }
+  .recent__item { grid-template-columns: 1fr; }
 }
 
 /* 打印 ------------------------------------------------------------ */

@@ -1,0 +1,22 @@
+{{- /*
+  分享预览（Open Graph 与 Twitter/X 卡片）。Telegram、X、Mastodon、Slack、Discord 等会读取这些标签。
+  标题、描述与 <title>、meta description 同源；条目页的描述含「现译……，建议……」。
+  分享图 static/og-image.png 全站共用。
+*/ -}}
+{{- $title := strings.TrimSuffix (printf "｜%s" site.Title) (partial "page-title.html" .) -}}
+{{- $desc := partial "page-description.html" . -}}
+{{- $isEntry := and (eq .Kind "page") (eq .Section "books") }}
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:type" content="{{ if $isEntry }}article{{ else }}website{{ end }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $desc }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="{{ "og-image.png" | absURL }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="推敲・译著勘误：记录各类中文译著里的翻译错误">
+{{- if and $isEntry (not .Lastmod.IsZero) }}
+<meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+<meta name="twitter:card" content="summary_large_image">

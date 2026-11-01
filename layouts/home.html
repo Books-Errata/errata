@@ -1,7 +1,10 @@
 {{ define "main" }}
+{{- $books := site.GetPage "/books" }}
+{{- $entries := $books.RegularPagesRecursive }}
 <div class="wrap home">
   <h1 class="home__title"><span class="home__mark">推敲</span><span class="home__sub">译著勘误</span></h1>
   <div class="prose home__intro">{{ .Content }}</div>
+  <p class="home__stats">本站已收录 {{ len $books.Sections }} 本书的 {{ len $entries }} 则勘误。</p>
 
   <form class="search-form" action="{{ "search/" | relURL }}" method="get" role="search">
     <label class="visually-hidden" for="home-q">搜索</label>
@@ -14,5 +17,29 @@
     <div><dt><a href="{{ "types/" | relURL }}">按类型</a></dt><dd>误译、漏译、专名与术语误识，以及可商榷之处和删节与改写的对照。</dd></div>
     <div><dt><a href="{{ "contribute/" | relURL }}">参与贡献</a></dt><dd>提交新的勘误，或指正已有条目。</dd></div>
   </dl>
+
+  {{- /* 最近收录：按 front matter 的 date 取最新的五条；没有 date 的条目不列入 */}}
+  {{- $recent := slice }}
+  {{- range $entries.ByDate.Reverse }}
+    {{- if and (not .Date.IsZero) (lt (len $recent) 5) }}{{ $recent = $recent | append . }}{{ end }}
+  {{- end }}
+  {{- with $recent }}
+  <section class="recent">
+    <h2>最近收录</h2>
+    <ol class="recent__list">
+      {{- range . }}
+      {{- $book := .CurrentSection }}
+      {{- $titleLang := .Params.title_lang | default (partial "text-lang.html" (dict "text" .Title "book" $book)) }}
+      <li class="recent__item">
+        <time class="recent__date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年1月2日" }}</time>
+        <span class="recent__body">
+          <a href="{{ .RelPermalink }}" lang="{{ $titleLang }}">{{ .Title }}</a>
+          <span class="recent__book" lang="{{ partial "book-lang.html" $book }}">《{{ $book.Title }}》</span>
+        </span>
+      </li>
+      {{- end }}
+    </ol>
+  </section>
+  {{- end }}
 </div>
 {{ end }}

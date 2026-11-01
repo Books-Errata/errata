@@ -1,12 +1,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-
+{{- /* 手机浏览器地址栏的颜色，与纸色一致 */}}
+<meta name="theme-color" content="#f7f5f0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1d1e20" media="(prefers-color-scheme: dark)">
+{{- /* 尽早标记 JS 可用，窄屏导航据此折叠，避免先展开再收起的闪动 */}}
 <script>document.documentElement.classList.add("js")</script>
 <title>{{ partial "page-title.html" . }}</title>
 <meta name="description" content="{{ partial "page-description.html" . }}">
 <link rel="canonical" href="{{ .Permalink }}">
 <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
+{{ partial "social-meta.html" . }}
 {{- with resources.Get "css/main.css" }}
 {{- $css := . | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">

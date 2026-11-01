@@ -1,5 +1,6 @@
 ---
 title: Malouines
+date: 2026-10-31
 weight: 10
 page_cn: "10"
 page_orig: "16"

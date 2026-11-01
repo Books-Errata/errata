@@ -1,5 +1,6 @@
 ---
 title: 従弟
+date: 2026-11-01
 weight: 97
 page_cn: "97"
 page_orig: ""

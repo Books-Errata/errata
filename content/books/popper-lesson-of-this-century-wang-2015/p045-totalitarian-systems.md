@@ -1,5 +1,6 @@
 ---
 title: totalitarian systems
+date: 2026-11-01
 weight: 45
 page_cn: "45"
 page_orig: "40"

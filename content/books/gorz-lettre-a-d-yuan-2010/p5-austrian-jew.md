@@ -1,5 +1,6 @@
 ---
 title: Austrian Jew
+date: 2026-10-31
 weight: 5
 page_cn: "5"
 page_orig: "11"
