@@ -7,7 +7,7 @@ page_orig: "31"
 current: 光荣特伦特
 suggested: 辉煌三十年
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false
