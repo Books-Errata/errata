@@ -1,7 +1,7 @@
 ---
 title: 世界史的誕生：中國史觀與地中海史觀的終結
 sort_title: shijieshidedansheng
-original_title: 世界史的誕生：中國史觀與地中海史觀的終結
+original_title: 世界史の誕生
 author: 岡田英弘（Okada Hidehiro）
 translator: 陳心慧
 publisher: 八旗文化
