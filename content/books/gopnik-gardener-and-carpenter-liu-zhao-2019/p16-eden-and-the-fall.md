@@ -6,7 +6,7 @@ page_orig: "20"
 current: 无论是伊甸园还是秋天
 suggested: 无论是伊甸园还是堕落
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false
@@ -29,4 +29,3 @@ fall 在美国英语中的确有「秋天」的意思。但这里的 Fall 是大
 译作「堕落」。
 
 ## 依据
-

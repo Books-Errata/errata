@@ -2,6 +2,7 @@
 {{- $book := .CurrentSection }}
 {{- $tl := partial "book-lang.html" $book }}
 {{- $revised := in (slice "已修订" "已修訂") .Params.status }}
+{{- $titleLang := .Params.title_lang | default (partial "text-lang.html" (dict "text" .Title "book" $book)) }}
 <div class="wrap">
   <nav class="crumbs" aria-label="位置">
     <a href="{{ "books/" | relURL }}">书目</a><span class="crumbs__sep" aria-hidden="true">／</span><a href="{{ $book.RelPermalink }}" lang="{{ $tl }}">{{ $book.Title }}</a>
@@ -9,7 +10,7 @@
 
   <article class="entry" data-pagefind-body data-pagefind-meta="title:{{ .Title }}　《{{ $book.Title }}》">
     <header class="page-head">
-      <h1>{{ .Title }}</h1>
+      <h1 lang="{{ $titleLang }}">{{ .Title }}</h1>
       {{- partial "contrast.html" . }}
     </header>
 

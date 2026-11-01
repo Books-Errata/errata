@@ -1,0 +1,15 @@
+{{- /*
+  条目页「原文」小节里的引文，标上原文的语言（lang），
+  读屏软件、断行和字体选择才会按原文语言处理。
+  所在小节由 render-heading.html 记在 .Page.Store 的 entrySecRole 里。
+  原文小节里用中文写的概述（如删节与改写对照）含有汉字，仍按中文处理，见 text-lang.html。
+  其他位置的引文照常输出。
+*/ -}}
+{{- $isEntry := and (eq .Page.Kind "page") (eq .Page.Section "books") -}}
+{{- $lang := "" -}}
+{{- if and $isEntry (eq (.Page.Store.Get "entrySecRole") "orig") -}}
+  {{- $lang = partial "text-lang.html" (dict "text" .Text "book" .Page.CurrentSection) -}}
+{{- end -}}
+<blockquote{{ with .Attributes.class }} class="{{ . }}"{{ end }}{{ with $lang }} lang="{{ . }}"{{ end }}>
+{{ .Text -}}
+</blockquote>

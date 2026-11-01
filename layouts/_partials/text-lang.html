@@ -1,0 +1,21 @@
+{{- /*
+  判断一段原文（条目标题、原文引文）用的是什么语言，返回语言代码。
+  输入：dict "text" 文字 "book" 书的 section
+
+  - 原书语言是中、日、韩文时，一律取原书语言（无法靠字形区分）；
+  - 其他语言：文字里有汉字，说明是中文描述或概述，取中译本用字；
+    没有汉字，取原书语言。
+  条目可在 front matter 里用 title_lang 指定标题语言，由调用方处理。
+*/ -}}
+{{- $tl := partial "book-lang.html" .book -}}
+{{- $src := .book.Params.source_lang | default "" -}}
+{{- $lang := $tl -}}
+{{- if $src -}}
+  {{- $base := index (split (lower $src) "-") 0 -}}
+  {{- if in (slice "zh" "ja" "ko") $base -}}
+    {{- $lang = $src -}}
+  {{- else if not (findRE `\p{Han}` (string .text) 1) -}}
+    {{- $lang = $src -}}
+  {{- end -}}
+{{- end -}}
+{{- return $lang -}}

@@ -313,7 +313,9 @@ blockquote p:last-child { margin-bottom: 0; }
    建议：左侧一条黛色细线。
    问题、讨论、依据、对照说明：普通正文。 */
 
-.entry-sec--lead:empty { display: none; }
+/* 空的小节不显示：正文前的引导小节通常是空的；只有标题、没有内容的小节
+   （例如还没写的「依据」）也不显示。补上内容后自动显示。 */
+.entry-sec:not(:has(> :not(h2))) { display: none; }
 
 .entry-sec--orig blockquote {
   font-size: 1.05rem;
@@ -506,10 +508,11 @@ a.tag--non-error:hover { color: var(--dai); }
 .book-notes .prose > h3:first-child { margin-top: 0; }
 
 /* 空的小节不显示：标题后面紧接着另一个标题，或者标题在最后。
+   书页正文的小节标题写作 ##，由 render-heading.html 降为 h3（见 archetypes/book.md）。
    作者以后补上内容，小节会自动显示。全部为空时，「整体说明」整节不显示。 */
-.book-notes .prose > h4:has(+ h4),
-.book-notes .prose > h4:last-child { display: none; }
-.book-notes:not(:has(.prose > :not(h4))) { display: none; }
+.book-notes .prose > h3:has(+ h3),
+.book-notes .prose > h3:last-child { display: none; }
+.book-notes:not(:has(.prose > :not(h3))) { display: none; }
 
 /* 书目总览 */
 .catalog {

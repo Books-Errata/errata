@@ -6,6 +6,9 @@
 
   做法：books/page.html 在正文外先开一个 <section>；这里每遇到一个二级标题，
   就先关上前一个 <section>，再开一个新的。只用于条目页的顶层二级标题。
+
+  当前小节的角色同时记在 .Page.Store 的 entrySecRole 里，
+  供 render-blockquote.html 给「原文」小节的引文标语言。
 */ -}}
 {{- $roles := dict
   "原文" "orig"
@@ -18,6 +21,7 @@
 {{- $isEntry := and (eq .Page.Kind "page") (eq .Page.Section "books") -}}
 {{- if and $isEntry (eq .Level 2) -}}
 {{- $role := index $roles (trim .PlainText " ") | default "other" -}}
+{{- .Page.Store.Set "entrySecRole" $role -}}
 </section><section class="entry-sec entry-sec--{{ $role }}">
 <h2 id="{{ .Anchor }}">{{ .Text }}</h2>
 {{- else -}}

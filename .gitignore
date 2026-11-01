@@ -1,4 +1,5 @@
-MAINTAINING.MD
+# 维护笔记，不提交。写成 [mM][dD] 是为了在区分大小写的系统上也能匹配
+/MAINTAINING.[mM][dD]
 public/
 resources/_gen/
 .hugo_build.lock
