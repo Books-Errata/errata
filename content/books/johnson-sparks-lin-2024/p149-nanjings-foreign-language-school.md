@@ -7,7 +7,7 @@ page_orig: ""
 current: 南京外語學院
 suggested: 南京外國語學校
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false

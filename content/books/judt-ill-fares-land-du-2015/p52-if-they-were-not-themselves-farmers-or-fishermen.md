@@ -3,7 +3,7 @@ title: if they were not themselves farmers or fishermen
 date: 2026-11-01
 weight: 52
 page_cn: "52"
-page_orig: "31"
+page_orig: ""
 current: 说大多数挪威人（如果他们不是农民或渔民）都是他们自己的孩子
 suggested: 若说大多数挪威人要么自己就是农民或渔民，要么就是这些农民或渔民的子女
 types: [mistranslation]

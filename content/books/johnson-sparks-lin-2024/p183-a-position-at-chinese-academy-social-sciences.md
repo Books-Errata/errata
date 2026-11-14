@@ -7,7 +7,7 @@ page_orig: ""
 current: 中國社會科學院院士
 suggested: 中國社會科學院的工作職位
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false

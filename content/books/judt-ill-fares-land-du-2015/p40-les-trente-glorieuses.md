@@ -3,7 +3,7 @@ title: Les Trente Glorieuses
 date: 2026-10-31
 weight: 40
 page_cn: "40"
-page_orig: "31"
+page_orig: ""
 current: 光荣特伦特
 suggested: 辉煌三十年
 types: [proper-noun]

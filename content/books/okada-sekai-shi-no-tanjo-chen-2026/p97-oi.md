@@ -7,7 +7,7 @@ page_orig: ""
 current: 外甥
 suggested: 侄兒
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false

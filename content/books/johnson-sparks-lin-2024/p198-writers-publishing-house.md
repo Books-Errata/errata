@@ -7,7 +7,7 @@ page_orig: ""
 current: 作家的出版社
 suggested: 作家出版社
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false

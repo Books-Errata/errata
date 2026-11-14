@@ -3,7 +3,7 @@ title: totalitarian
 date: 2026-10-31
 weight: 34
 page_cn: "34"
-page_orig: "31"
+page_orig: ""
 current: 集权
 suggested: 极权
 types: [proper-noun]

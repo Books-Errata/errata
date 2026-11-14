@@ -7,7 +7,7 @@ page_orig: ""
 current: 烏蘭呼
 suggested: 烏蘭夫
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false

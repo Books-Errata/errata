@@ -7,7 +7,7 @@ page_orig: "46"
 current: 学士街
 suggested: 渡船路
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false

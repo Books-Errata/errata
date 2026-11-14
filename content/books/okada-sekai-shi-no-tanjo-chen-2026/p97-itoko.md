@@ -7,7 +7,7 @@ page_orig: ""
 current: 表弟
 suggested: 堂弟
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false

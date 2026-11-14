@@ -15,11 +15,11 @@ verified: false
 
 ## 原文
 
-> Our lives wouldn't be fully human without both phases— _Eden and the Fall_ , innocence and experience.
+> Our lives wouldn't be fully human without both phases— **Eden and the Fall** , innocence and experience.
 
 ## 现译
 
->  这两个阶段无论缺了哪一个，我们的人生都不完整。_无论是伊甸园还是秋天_ ，无论是天真还是经验。
+>  这两个阶段无论缺了哪一个，我们的人生都不完整。**无论是伊甸园还是秋天** ，无论是天真还是经验。
 
 ## 问题
 

@@ -13,7 +13,7 @@ translation_lang: zh-Hans
 
 ## 阅读范围
 
-序言
+引言
 
 ## 勘误所占比例
 

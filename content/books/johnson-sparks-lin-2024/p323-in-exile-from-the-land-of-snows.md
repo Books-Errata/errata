@@ -7,7 +7,7 @@ page_orig: ""
 current: 從雪國出亡
 suggested: 雪域境外流亡記
 types: [proper-noun]
-terms: [totalitarianism]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false
