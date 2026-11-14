@@ -17,7 +17,9 @@
 
     <dl class="facts" data-pagefind-ignore>
       <div><dt>译著</dt><dd><a href="{{ $book.RelPermalink }}" lang="{{ $tl }}">《{{ $book.Title }}》</a>{{ with $book.Params.edition }}<span class="facts__note" lang="{{ $tl }}">{{ . }}</span>{{ end }}</dd></div>
-      <div><dt>页码</dt><dd>中译本第{{ .Params.page_cn | default .Weight }}页{{ with .Params.page_orig }}，原书第{{ . }}页{{ end }}</dd></div>
+      {{- with partial "locator.html" (dict "page" . "form" "long") }}
+      <div><dt>位置</dt><dd>{{ . }}</dd></div>
+      {{- end }}
       <div><dt>类型</dt><dd>{{ partial "type-tags.html" . }}</dd></div>
       {{- with .GetTerms "terms" }}
       <div><dt>术语</dt><dd>
@@ -32,6 +34,8 @@
 
     <span hidden data-pagefind-filter="书">{{ $book.Title }}</span>
     {{- range .GetTerms "types" }}<span hidden data-pagefind-filter="类型">{{ .LinkTitle }}</span>{{ end }}
+    {{- /* 程度筛选统一用简体，繁体书目的「錯誤」「不夠精確」也归入同一项 */}}
+    {{- with .Params.degree }}{{ with index (dict "错误" "错误" "錯誤" "错误" "不够精确" "不够精确" "不夠精確" "不够精确" "可商榷" "可商榷") . }}<span hidden data-pagefind-filter="程度">{{ . }}</span>{{ end }}{{ end }}
   </article>
 
   <footer class="entry-foot">

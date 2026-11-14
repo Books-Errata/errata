@@ -10,13 +10,3 @@ original_edition: CHIKUMASHOBO LTD. Tokyo, 1999
 source_lang: ja
 translation_lang: zh-Hant
 ---
-
-### 阅读范围
-
-所有章节的每一页
-
-### 勘误所占比例
-
-
-### 整体评价
-

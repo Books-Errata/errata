@@ -6,7 +6,8 @@ page_cn: "10"
 page_orig: "16"
 current: 马洛于内群岛
 suggested: 马尔维纳斯群岛
-types: [proper-noun]
+types: [names]
+degree: 错误
 terms: []
 status: 未修订
 revised_in: ""

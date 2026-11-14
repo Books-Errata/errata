@@ -6,7 +6,8 @@ page_cn: "30"
 page_orig: "46"
 current: 学士街
 suggested: 渡船路
-types: [proper-noun]
+types: [names]
+degree: 错误
 terms: []
 status: 未修订
 revised_in: ""

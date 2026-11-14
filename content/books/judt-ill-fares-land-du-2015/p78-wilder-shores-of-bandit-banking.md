@@ -6,7 +6,8 @@ page_cn: "78"
 page_orig: ""
 current: 冰岛热衷于土匪银行的野蛮海滩的悲哀故事
 suggested: 冰岛曾狂热追逐强盗式银行业中那些愈发放纵、失去约束的做法
-types: [proper-noun]
+types: [rhetoric]
+degree: 错误
 terms: []
 status: 未修订
 revised_in: ""

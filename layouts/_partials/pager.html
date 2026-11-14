@@ -1,0 +1,26 @@
+{{- /* 分页导航。传入分页器；只有一页时不输出任何内容 */ -}}
+{{- $p := . -}}
+{{- if gt $p.TotalPages 1 }}
+<nav class="pager" aria-label="分页">
+  {{- if $p.HasPrev }}
+  <a class="pager__prev" href="{{ $p.Prev.URL }}#entries" rel="prev">上一页</a>
+  {{- else }}
+  <span class="pager__prev pager__off" aria-hidden="true">上一页</span>
+  {{- end }}
+  <ol class="pager__list">
+    {{- range $p.Pagers }}
+    {{- if eq .PageNumber $p.PageNumber }}
+    <li><span class="pager__cur" aria-current="page">{{ .PageNumber }}</span></li>
+    {{- else }}
+    <li><a href="{{ .URL }}#entries">{{ .PageNumber }}</a></li>
+    {{- end }}
+    {{- end }}
+  </ol>
+  {{- if $p.HasNext }}
+  <a class="pager__next" href="{{ $p.Next.URL }}#entries" rel="next">下一页</a>
+  {{- else }}
+  <span class="pager__next pager__off" aria-hidden="true">下一页</span>
+  {{- end }}
+  <span class="pager__info">共 {{ $p.TotalNumberOfElements }} 条，第 {{ $p.PageNumber }}／{{ $p.TotalPages }} 页</span>
+</nav>
+{{- end }}

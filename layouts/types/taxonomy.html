@@ -3,7 +3,7 @@
   <header class="page-head"><h1>{{ .Title }}</h1></header>
   <div class="prose">{{ .Content }}</div>
   {{- $all := .Pages.ByWeight }}
-  {{- range slice (dict "family" "error" "name" "可以查证的错误") (dict "family" "non-error" "name" "不称为错误") }}
+  {{- range slice (dict "family" "discrepancy" "name" "出入") (dict "family" "comparison" "name" "对照") }}
   {{- $f := .family }}
   <section class="family family--{{ $f }}">
     <h2>{{ .name }}</h2>

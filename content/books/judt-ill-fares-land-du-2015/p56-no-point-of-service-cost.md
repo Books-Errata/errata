@@ -6,7 +6,8 @@ page_cn: "56"
 page_orig: ""
 current: 让每个英国公民无须支付服务点费用就可以得到一流的医疗服务
 suggested: 让每位英国公民在就医时无需付费，就可以得到一流的医疗服务
-types: [proper-noun]
+types: [word-sense]
+degree: 错误
 terms: []
 status: 未修订
 revised_in: ""

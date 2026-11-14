@@ -15,20 +15,44 @@
   {{- warnf "%s：缺少收录日期 date，不会出现在首页「最近收录」" $f -}}
 {{- end -}}
 
-{{- /* 类型 */ -}}
-{{- $known := slice "mistranslation" "omission" "proper-noun" "debatable" "abridgment" -}}
-{{- $solo := slice "debatable" "abridgment" -}}
+{{- /* 类型：每条只选一个。
+       出入族要标程度 degree；对照族只并列原文与译文，不标程度。
+       两族的划分须与类型页 content/types/<slug>/_index.md 中的 family 一致。 */ -}}
+{{- $discrepancy := slice "names" "word-sense" "syntax" "rhetoric" "omission" "addition" -}}
+{{- $comparison := slice "rewriting" "abridgment" -}}
+{{- $known := $discrepancy | append $comparison -}}
 {{- $types := slice -}}
-{{- with .Params.types }}{{ $types = . }}{{ end -}}
+{{- with .Params.types -}}
+  {{- if reflect.IsSlice . }}{{ $types = . }}{{ else }}{{ $types = slice . }}{{ end -}}
+{{- end -}}
+{{- $type := "" -}}
 {{- if not $types -}}
   {{- errorf "%s：缺少 types" $f -}}
-{{- end -}}
-{{- range $types -}}
-  {{- if not (in $known .) -}}
-    {{- errorf "%s：未知类型「%s」，可用的类型：%s" $f . (delimit $known "、") -}}
+{{- else if gt (len $types) 1 -}}
+  {{- errorf "%s：types 只能选一个，现为 %s" $f (delimit $types "、") -}}
+{{- else -}}
+  {{- $type = index $types 0 -}}
+  {{- if not (in $known $type) -}}
+    {{- errorf "%s：未知类型「%s」，可用的类型：%s" $f $type (delimit $known "、") -}}
   {{- end -}}
-  {{- if and (in $solo .) (gt (len $types) 1) -}}
-    {{- errorf "%s：「%s」只能单独使用，不能与其他类型并用" $f . -}}
+{{- end -}}
+
+{{- /* 程度：出入族必填，对照族不填。繁体书目也可写作「錯誤」「不夠精確」，统一换算成简体比较 */ -}}
+{{- $degrees := dict "错误" "错误" "錯誤" "错误" "不够精确" "不够精确" "不夠精確" "不够精确" "可商榷" "可商榷" -}}
+{{- $degree := "" -}}
+{{- with .Params.degree -}}
+  {{- with index $degrees . }}{{ $degree = . }}{{ end -}}
+  {{- if not $degree -}}
+    {{- errorf "%s：degree 只能是「错误」「不够精确」「可商榷」，现为「%s」" $f . -}}
+  {{- end -}}
+{{- end -}}
+{{- if in $discrepancy $type -}}
+  {{- if not .Params.degree -}}
+    {{- errorf "%s：类型「%s」须注明程度 degree（错误／不够精确／可商榷）" $f $type -}}
+  {{- end -}}
+{{- else if in $comparison $type -}}
+  {{- with .Params.degree -}}
+    {{- errorf "%s：「%s」是对照类，只做对照，不标程度，请删去 degree" $f $type -}}
   {{- end -}}
 {{- end -}}
 
@@ -53,20 +77,17 @@
   {{- warnf "%s：缺少 status" $f -}}
 {{- end -}}
 
-{{- /* 页码 */ -}}
+{{- /* 位置：页码 page_cn、page_orig 和位置 location 都是可选的。
+       看电子书没有页码时，写 location（如「第七章」），条目排在有页码的条目之后。
+       三项都没有时只提示一次，不影响构建。 */ -}}
 {{- $pageCN := string (.Params.page_cn | default "") -}}
-{{- if not $pageCN -}}
-  {{- warnf "%s：缺少中译本页码 page_cn" $f -}}
-{{- else if findRE `^\d+$` $pageCN 1 -}}
+{{- if and (not $pageCN) (not .Params.page_orig) (not .Params.location) -}}
+  {{- warnf "%s：没有页码，也没有位置 location，读者难以找到原处" $f -}}
+{{- end -}}
+{{- if findRE `^\d+$` $pageCN 1 -}}
   {{- if ne (int $pageCN) .Weight -}}
-    {{- warnf "%s：weight（%d）与 page_cn（%s）不一致，列表排序会出错" $f .Weight $pageCN -}}
+    {{- warnf "%s：weight（%d）与 page_cn（%s）不一致，列表排序会出错；请把 weight 也改为 %s" $f .Weight $pageCN $pageCN -}}
   {{- end -}}
-{{- end -}}
-{{- if eq .Weight 0 -}}
-  {{- warnf "%s：weight 为 0，条目会排在最前" $f -}}
-{{- end -}}
-{{- if and (not .Params.page_orig) (not (in $types "abridgment")) -}}
-  {{- warnf "%s：缺少原书页码 page_orig" $f -}}
 {{- end -}}
 
 {{- /* 现译与建议的简短形式：两项都有才显示对照 */ -}}
@@ -74,12 +95,19 @@
   {{- warnf "%s：current 和 suggested 只填了一项，对照不会显示" $f -}}
 {{- end -}}
 
-{{- /* 正文小节。标题由 render-heading.html 输出为 <h2 id="…">标题</h2> */ -}}
+{{- /* 正文小节。标题由 render-heading.html 输出为 <h2 id="…">标题</h2>
+       出入族：原文、现译、问题、建议、依据；程度为「可商榷」时，以「讨论」代替「问题」。
+       对照族：原文、现译、对照说明，「依据」可选；不得有「问题」「建议」，也不填 suggested。 */ -}}
 {{- $required := slice "原文" "现译" "问题" "建议" "依据" -}}
-{{- if in $types "debatable" -}}
+{{- $forbidden := slice -}}
+{{- if eq $degree "可商榷" -}}
   {{- $required = slice "原文" "现译" "讨论" "建议" "依据" -}}
-{{- else if in $types "abridgment" -}}
+  {{- $forbidden = slice "问题" -}}
+{{- else if in $comparison $type -}}
   {{- $required = slice "原文" "现译" "对照说明" -}}
+  {{- $forbidden = slice "问题" "讨论" "建议" -}}
+{{- else if $degree -}}
+  {{- $forbidden = slice "讨论" -}}
 {{- end -}}
 {{- $hant := dict "现译" "現譯" "问题" "問題" "讨论" "討論" "建议" "建議" "依据" "依據" "对照说明" "對照說明" -}}
 {{- $content := string .Content -}}
@@ -91,6 +119,20 @@
   {{- if not (or (in $found .) (in $found (index $hant . | default .))) -}}
     {{- errorf "%s：缺少「%s」小节" $f . -}}
   {{- end -}}
+{{- end -}}
+{{- range $forbidden -}}
+  {{- if or (in $found .) (in $found (index $hant . | default .)) -}}
+    {{- if in $comparison $type -}}
+      {{- errorf "%s：对照类条目不用「%s」小节，差异写在「对照说明」中" $f . -}}
+    {{- else if eq $degree "可商榷" -}}
+      {{- errorf "%s：程度为「可商榷」，请把「问题」改为「讨论」" $f -}}
+    {{- else -}}
+      {{- errorf "%s：程度为「%s」，请把「讨论」改为「问题」；「讨论」只用于可商榷" $f $degree -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if and (in $comparison $type) .Params.suggested -}}
+  {{- warnf "%s：对照类条目不填 suggested，页面上不会显示" $f -}}
 {{- end -}}
 {{- range findRESubmatch `<h2 id="[^"]*">([^<]*)</h2>\s*(?:</section>|$)` $content -}}
   {{- warnf "%s：「%s」小节还没有内容，页面上暂不显示" $f (index . 1) -}}

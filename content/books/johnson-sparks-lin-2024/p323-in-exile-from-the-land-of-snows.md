@@ -6,7 +6,8 @@ page_cn: "323"
 page_orig: ""
 current: 從雪國出亡
 suggested: 雪域境外流亡記
-types: [proper-noun]
+types: [names]
+degree: 錯誤
 terms: []
 status: 未修订
 revised_in: ""

@@ -6,7 +6,8 @@ page_cn: "79"
 page_orig: ""
 current: 多亏了各处的摄像头……
 suggested: 拜闭路电视监控……所赐
-types: [debatable]
+types: [rhetoric]
+degree: 可商榷
 terms: []
 status: 未修订
 revised_in: ""
@@ -21,7 +22,7 @@ verified: false
 
 > 多亏了各处的摄像头、窃听器、国土安全部、英国独立保安局和其他措施，现代国家对其臣民无处不在的控制在继续扩大。
 
-## 问题
+## 讨论
 
 将 thanks to 译为「多亏了」，在词汇层面并无明显错误，但未能充分传达原文的反讽语气，中文固有表达「拜……所赐」正好可以对应这种反讽。
 
@@ -31,4 +32,3 @@ verified: false
 
 ## 依据
 
-## 讨论

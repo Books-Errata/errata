@@ -18,6 +18,10 @@ hasCJKLanguage = true
   locale = 'zh-Hans'
   weight = 1
 
+# 书页的校勘条目分页，每页条数
+[pagination]
+  pagerSize = 10
+
 [taxonomies]
   type = 'types'
   # 术语页暂未上线。上线时取消下一行注释，并删去 content/terms/_index.md 中的 build 设置

@@ -6,7 +6,8 @@ page_cn: "16"
 page_orig: "20"
 current: 无论是伊甸园还是秋天
 suggested: 无论是伊甸园还是堕落
-types: [proper-noun]
+types: [names]
+degree: 错误
 terms: []
 status: 未修订
 revised_in: ""

@@ -1,9 +1,16 @@
 {{- /* 返回 meta description 文本 */ -}}
 {{- $s := .Description | default site.Params.description -}}
 {{- if and (eq .Kind "page") (eq .Section "books") -}}
-  {{- $s = printf "《%s》中译本第%s页。" .CurrentSection.Title (.Params.page_cn | default (string .Weight)) -}}
+  {{- $s = printf "《%s》" .CurrentSection.Title -}}
+  {{- with partial "locator.html" (dict "page" . "form" "long") }}{{ $s = printf "%s%s" $s . }}{{ end -}}
+  {{- $s = printf "%s。" $s -}}
+  {{- /* 对照族（改写、删节）不给建议，与 contrast.html 一致 */ -}}
+  {{- $family := "" -}}
+  {{- with .GetTerms "types" }}{{ $family = (index . 0).Params.family }}{{ end -}}
+  {{- if ne $family "comparison" -}}
   {{- with and .Params.current .Params.suggested -}}
     {{- $s = printf "%s现译「%s」，建议「%s」。" $s $.Params.current $.Params.suggested -}}
+  {{- end -}}
   {{- end -}}
 {{- end -}}
 {{- return $s -}}

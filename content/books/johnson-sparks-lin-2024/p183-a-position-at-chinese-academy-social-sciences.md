@@ -6,7 +6,8 @@ page_cn: "183"
 page_orig: ""
 current: 中國社會科學院院士
 suggested: 中國社會科學院的工作職位
-types: [proper-noun]
+types: [word-sense]
+degree: 錯誤
 terms: []
 status: 未修订
 revised_in: ""

@@ -1,13 +1,12 @@
 ---
 title: Taiwan was not recognized as a nation
 date: 2026-11-01
-weight: 
+weight: 0
 page_cn: ""
 page_orig: ""
-current: 台湾是中国的一个省
-suggested: 台湾未被承认为一个国家
-types: [proper-noun]
-terms: [totalitarianism]
+location: 第七章
+types: [rewriting]
+terms: []
 status: 未修订
 revised_in: ""
 verified: false
@@ -21,12 +20,8 @@ verified: false
 
 >  尽管它不是官方的国家标准，因为 **台湾是中国的一个省**。
 
-## 问题
+## 对照说明
 
-英文原文并未表明「台湾是中国的一个省」，译文修改原文意思，使用一种接近北京政府立场的表述。
+原文说明这项标准在官方层面并不是国家标准，原因是台湾未被承认为一个国家（Taiwan was not recognized as a nation）。译文在相应位置作「台湾是中国的一个省」。两处对原因的表述不同，差异涉及台湾的国际地位。
 
-## 建议
-
-尽管在官方层面上这并非国家标准——因为台湾未被承认为一个国家。
-
-## 依据
+原文可直译为：「尽管在官方层面上这并非国家标准——因为台湾未被承认为一个国家。」

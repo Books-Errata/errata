@@ -6,7 +6,8 @@ page_cn: "5"
 page_orig: "11"
 current: 澳洲犹太小子
 suggested: 奥地利犹太小子
-types: [proper-noun]
+types: [names]
+degree: 错误
 terms: []
 status: 未修订
 revised_in: ""

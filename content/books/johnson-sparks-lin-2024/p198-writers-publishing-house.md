@@ -6,7 +6,8 @@ page_cn: "198"
 page_orig: ""
 current: 作家的出版社
 suggested: 作家出版社
-types: [proper-noun]
+types: [names]
+degree: 錯誤
 terms: []
 status: 未修订
 revised_in: ""

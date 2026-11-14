@@ -8,8 +8,8 @@
   --ink: #1a1a18;
   --muted: #5a5654;
   --rule: #d0ccc4;
-  --zhu: #b03020;   /* 朱：可以查证的错误 */
-  --dai: #3d5a72;   /* 黛：不称为错误（主站无对应色） */
+  --zhu: #b03020;   /* 朱：出入 */
+  --dai: #3d5a72;   /* 黛：对照（主站无对应色） */
   --field: #ffffff;
   --tint: #eeebe4;  /* 现译的衬底 */
   --link: #b03020;        /* 主站 accent，正文中的链接 */
@@ -401,11 +401,21 @@ blockquote p:last-child { margin-bottom: 0; }
   text-decoration: none;
   white-space: nowrap;
 }
-.tag--error { color: var(--zhu); }
-.tag--non-error { color: var(--dai); border-style: dashed; }
+.tag--discrepancy { color: var(--zhu); }
+.tag--comparison { color: var(--dai); border-style: dashed; }
 a.tag:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
-a.tag--error:hover { color: var(--zhu); }
-a.tag--non-error:hover { color: var(--dai); }
+a.tag--discrepancy:hover { color: var(--zhu); }
+a.tag--comparison:hover { color: var(--dai); }
+
+/* 程度：跟在出入族的类型标签后面，不加边框，只以字色区分轻重 */
+.degree {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.degree--error { color: var(--zhu); }
 
 .pending {
   display: inline-block;
@@ -490,10 +500,9 @@ a.tag--non-error:hover { color: var(--dai); }
 .book-group__meta span + span::before,
 .catalog__meta span + span::before { content: "，"; }
 
-/* 书页：条目列表在前，整体说明在后 */
+/* 书页 */
 .book .facts { border-bottom: none; margin-bottom: 0; }
-.book .entries > h2,
-.book-notes > h2 {
+.book .entries > h2 {
   margin: 2.4rem 0 0.8rem;
   padding-top: 1.2rem;
   border-top: 2px solid var(--ink);
@@ -501,18 +510,38 @@ a.tag--non-error:hover { color: var(--dai); }
   font-size: 1.05rem;
   font-weight: 600;
 }
-.book-notes .prose h3 {
-  margin: 1.6em 0 0.4em;
-  font-size: 0.95rem;
-}
-.book-notes .prose > h3:first-child { margin-top: 0; }
 
-/* 空的小节不显示：标题后面紧接着另一个标题，或者标题在最后。
-   书页正文的小节标题写作 ##，由 render-heading.html 降为 h3（见 archetypes/book.md）。
-   作者以后补上内容，小节会自动显示。全部为空时，「整体说明」整节不显示。 */
-.book-notes .prose > h3:has(+ h3),
-.book-notes .prose > h3:last-child { display: none; }
-.book-notes:not(:has(.prose > :not(h3))) { display: none; }
+/* 分页 */
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 1.4rem;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+}
+.pager__list {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pager__list a, .pager__cur {
+  display: inline-block;
+  min-width: 2em;
+  padding: 0.1em 0.4em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  border-radius: 2px;
+}
+.pager__list a { color: var(--ink); text-decoration: none; }
+.pager__list a:hover { background: var(--tint); }
+.pager__cur { background: var(--ink); color: var(--paper); }
+.pager__prev, .pager__next { color: var(--ink); }
+.pager__off { color: var(--rule); }
+.pager__info { margin-left: auto; color: var(--muted); font-size: 0.85rem; }
 
 /* 书目总览 */
 .catalog {
@@ -545,8 +574,8 @@ a.tag--non-error:hover { color: var(--dai); }
   font-size: 1rem;
   font-weight: 600;
 }
-.family--error > h2 { color: var(--zhu); }
-.family--non-error > h2 { color: var(--dai); }
+.family--discrepancy > h2 { color: var(--zhu); }
+.family--comparison > h2 { color: var(--dai); }
 
 .type-list, .term-list, .ways { margin: 0; }
 .type-list > div, .term-list > div, .ways > div {

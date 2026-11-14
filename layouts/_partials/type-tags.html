@@ -1,7 +1,14 @@
+{{- /* 类型标签，出入族后接程度，如「词义」不够精确。
+       传入条目页；类型页本身的 family（discrepancy／comparison）决定标签样式 */ -}}
+{{- $page := . -}}
 {{- with .GetTerms "types" }}
 <span class="tags">
   {{- range . }}
-  <a class="tag tag--{{ .Params.family | default "error" }}" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+  <a class="tag tag--{{ .Params.family | default "discrepancy" }}" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+  {{- end }}
+  {{- with $page.Params.degree }}
+  {{- $cls := index (dict "错误" "error" "錯誤" "error" "不够精确" "imprecise" "不夠精確" "imprecise" "可商榷" "debatable") . }}
+  <span class="degree degree--{{ $cls | default "unknown" }}">{{ . }}</span>
   {{- end }}
 </span>
 {{- end }}

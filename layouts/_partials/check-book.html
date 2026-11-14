@@ -31,3 +31,7 @@
 {{- with $missing -}}
   {{- warnf "%s：书目信息不完整，缺少 %s" $f (delimit . "、") -}}
 {{- end -}}
+{{- /* 书页不再显示正文 */ -}}
+{{- if .RawContent | strings.TrimSpace -}}
+  {{- warnf "%s：书页不再显示正文，请删去 front matter 之后的内容" $f -}}
+{{- end -}}

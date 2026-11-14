@@ -6,7 +6,8 @@ page_cn: "40"
 page_orig: ""
 current: 光荣特伦特
 suggested: 辉煌三十年
-types: [proper-noun]
+types: [names]
+degree: 错误
 terms: []
 status: 未修订
 revised_in: ""

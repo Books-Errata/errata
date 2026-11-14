@@ -6,7 +6,8 @@ page_cn: "149"
 page_orig: ""
 current: 南京外語學院
 suggested: 南京外國語學校
-types: [proper-noun]
+types: [names]
+degree: 錯誤
 terms: []
 status: 未修订
 revised_in: ""

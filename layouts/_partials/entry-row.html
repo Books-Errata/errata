@@ -1,6 +1,6 @@
 {{- $titleLang := .Params.title_lang | default (partial "text-lang.html" (dict "text" .Title "book" .CurrentSection)) }}
 <li class="entry-row">
-  <span class="entry-row__page">第{{ .Params.page_cn | default .Weight }}页</span>
+  <span class="entry-row__page">{{ partial "locator.html" (dict "page" . "form" "short") }}</span>
   <div class="entry-row__body">
     <a class="entry-row__title" href="{{ .RelPermalink }}" lang="{{ $titleLang }}">{{ .Title }}</a>
     {{- partial "type-tags.html" . }}

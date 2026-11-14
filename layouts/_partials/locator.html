@@ -1,0 +1,18 @@
+{{- /* 条目的位置。传入 dict "page" 条目 "form" "short"|"long"，返回文本：
+       short（列表左栏）：有中译本页码显示「第34页」，否则显示 location，都没有则为「—」
+       long（条目页）：「中译本第34页，原书第40页，第七章」，有哪项写哪项，都没有则为空 */ -}}
+{{- $p := .page -}}
+{{- $cn := string ($p.Params.page_cn | default "") -}}
+{{- $orig := string ($p.Params.page_orig | default "") -}}
+{{- $loc := $p.Params.location | default "" -}}
+{{- $s := "" -}}
+{{- if eq .form "short" -}}
+  {{- if $cn }}{{ $s = printf "第%s页" $cn }}{{ else if $loc }}{{ $s = $loc }}{{ else }}{{ $s = "—" }}{{ end -}}
+{{- else -}}
+  {{- $parts := slice -}}
+  {{- with $cn }}{{ $parts = $parts | append (printf "中译本第%s页" .) }}{{ end -}}
+  {{- with $orig }}{{ $parts = $parts | append (printf "原书第%s页" .) }}{{ end -}}
+  {{- with $loc }}{{ $parts = $parts | append . }}{{ end -}}
+  {{- $s = delimit $parts "，" -}}
+{{- end -}}
+{{- return $s -}}

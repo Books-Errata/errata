@@ -10,13 +10,3 @@ original_edition: The Penguin Press, New York, 2010
 source_lang: en
 translation_lang: zh-Hans
 ---
-
-### 阅读范围
-
-第一、二章
-
-### 勘误所占比例
-
-
-### 整体评价
-

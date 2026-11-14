@@ -11,12 +11,3 @@ source_lang: en
 translation_lang: zh-Hans
 ---
 
-### 阅读范围
-
-所有章节的每一页
-
-### 勘误所占比例
-
-
-### 整体评价
-

@@ -1,12 +1,12 @@
 {{ define "main" }}
-{{- $f := .Params.family | default "error" }}
+{{- $f := .Params.family | default "discrepancy" }}
 <div class="wrap">
   <nav class="crumbs" aria-label="位置"><a href="{{ "types/" | relURL }}">类型</a></nav>
   <article data-pagefind-body>
     <header class="page-head">
       <h1>{{ .Title }}</h1>
       <p class="page-head__note">
-        <span class="tag tag--{{ $f }}">{{ if eq $f "error" }}可以查证的错误{{ else }}不称为错误{{ end }}</span>
+        <span class="tag tag--{{ $f }}">{{ if eq $f "comparison" }}对照{{ else }}出入{{ end }}</span>
         <span class="slug" lang="en">{{ .Data.Term }}</span>
       </p>
     </header>

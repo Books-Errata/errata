@@ -6,7 +6,8 @@ page_cn: "45"
 page_orig: "40"
 current: 集权主义
 suggested: 极权主义
-types: [proper-noun]
+types: [names]
+degree: 错误
 terms: [totalitarianism]
 status: 未修订
 revised_in: ""

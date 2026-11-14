@@ -6,7 +6,8 @@ page_cn: "241"
 page_orig: ""
 current: 烏蘭呼
 suggested: 烏蘭夫
-types: [proper-noun]
+types: [names]
+degree: 錯誤
 terms: []
 status: 未修订
 revised_in: ""

@@ -11,11 +11,3 @@ source_lang: en
 translation_lang: zh-Hans
 ---
 
-## 阅读范围
-
-引言
-
-## 勘误所占比例
-
-
-## 整体评价

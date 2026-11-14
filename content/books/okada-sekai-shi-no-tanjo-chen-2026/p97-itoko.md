@@ -6,7 +6,8 @@ page_cn: "97"
 page_orig: ""
 current: 表弟
 suggested: 堂弟
-types: [proper-noun]
+types: [word-sense]
+degree: 錯誤
 terms: []
 status: 未修订
 revised_in: ""

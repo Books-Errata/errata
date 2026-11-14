@@ -1,5 +1,5 @@
 name: 提交新勘误
-description: 对照原文，提交中译本中的误译、漏译、专名与术语误识、可商榷之处，或删节与改写的对照。
+description: 对照原文，提交中译本中与原文有出入之处，或改写、删节的对照。
 title: "[新勘误] "
 labels: ["新勘误"]
 body:
@@ -53,22 +53,32 @@ body:
     id: page_cn
     attributes:
       label: 中译本页码
+      description: 看电子书没有页码时可以不填，在下面的「位置」中写章节。
     validations:
-      required: true
+      required: false
 
   - type: input
     id: page_orig
     attributes:
       label: 原书页码
-      description: 电子书没有页码时，写章节和段落位置。
+      description: 没有页码时可以不填。
     validations:
-      required: true
+      required: false
+
+  - type: input
+    id: location
+    attributes:
+      label: 位置
+      description: 没有页码时，写章节等位置，便于读者找到原处。有页码也可以一起写。
+      placeholder: 第七章第二节
+    validations:
+      required: false
 
   - type: textarea
     id: source_text
     attributes:
       label: 原文
-      description: 以说明问题所需为限，一般不超过一两句。成段的删节可以概述内容，只引说明位置所需的一两句。
+      description: 以说明问题所需为限，一般不超过一两句。删节可以概述内容，只引说明位置所需的一两句。
     validations:
       required: true
 
@@ -83,11 +93,13 @@ body:
   - type: textarea
     id: problem
     attributes:
-      label: 问题
+      label: 说明
       description: |
-        说明译文与原文的出入。只针对文本，不评价译者，不推测成因。
-        如果是删节与改写，这里写「对照说明」：并列说明差异，不使用「问题」「错误」等词。
-        如果是可商榷，这里写为何另有考虑。
+        - 程度为「错误」「不够精确」：说明译文与原文的出入。
+        - 程度为「可商榷」：说明为何另有考虑，不下定论。
+        - 改写、删节：并列说明原文说了什么、译文说了什么，不使用「问题」「错误」等词，也不描述立场或动机。
+
+        只针对文本，不评价译者，不推测成因。
     validations:
       required: true
 
@@ -95,7 +107,7 @@ body:
     id: suggestion
     attributes:
       label: 建议
-      description: 建议的译法。把握不足时如实说明。删节与改写对照可以不填。
+      description: 建议的译法。只改需要改的部分；把握不足时如实说明。改写、删节不填。
     validations:
       required: false
 
@@ -103,7 +115,7 @@ body:
     id: basis
     attributes:
       label: 依据
-      description: 可核对的依据，例如词典及义项、原始出处、通行译名、上下文。删节与改写对照可写所核对的原书版本。
+      description: 可核对的依据，例如词典及义项、官方名称、通行译名的出处、已出版的中译本、史实及其出处、原书上下文。改写、删节可写所核对的原书版本。
     validations:
       required: true
 
@@ -111,14 +123,47 @@ body:
     id: types
     attributes:
       label: 类型
-      description: 前三类可以并选；「可商榷」「删节与改写对照」单独使用。不确定就选「不确定」，维护者会再确认。
-      multiple: true
+      description: |
+        只选一个。各类的说明和判断顺序见 https://errata.hone.ink/types/ 。不确定就选「不确定」，维护者会再确认。
+
+        - 译名：人名、地名、机构名、书名、历史名词、术语没有用既有的中文说法，或认错了所指（含回译）
+        - 词义：词或短语在上下文中的意义取错或取偏
+        - 句法：结构、修饰关系、指代、否定或比较或条件的范围与原文不符
+        - 修辞与语气：比喻、习语、典故按字面译出，或反讽、褒贬、语气没有传达或被改变
+        - 漏译：原文某句在译文中有对应，但句中的词、短语或分句没有对应
+        - 增译：译文多出原文没有的内容，又不是中文通顺所需
+        - 改写：两边都有文字，但内容不同，且无法由对原文的任何理解得出（只做对照）
+        - 删节：原文一整句或更多在译文中没有对应（只做对照）
+      multiple: false
       options:
-        - 误译
+        - 译名
+        - 词义
+        - 句法
+        - 修辞与语气
         - 漏译
-        - 专名与术语误识
+        - 增译
+        - 改写
+        - 删节
+        - 不确定
+    validations:
+      required: true
+
+  - type: dropdown
+    id: degree
+    attributes:
+      label: 程度
+      description: |
+        - 错误：译文所述与原文不符，可以核实。
+        - 不够精确：基本意思不错，但偏离了原文的重点、语气或色彩。
+        - 可商榷：现译可以成立，只是另有值得考虑的译法；或证据不足以断定。
+
+        改写、删节不分程度，选「不适用」。
+      multiple: false
+      options:
+        - 错误
+        - 不够精确
         - 可商榷
-        - 删节与改写对照
+        - 不适用（改写、删节）
         - 不确定
     validations:
       required: true

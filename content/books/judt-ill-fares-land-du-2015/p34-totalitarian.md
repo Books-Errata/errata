@@ -6,7 +6,8 @@ page_cn: "34"
 page_orig: ""
 current: 集权
 suggested: 极权
-types: [proper-noun]
+types: [names]
+degree: 错误
 terms: [totalitarianism]
 status: 未修订
 revised_in: ""
