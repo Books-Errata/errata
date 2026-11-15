@@ -4,7 +4,7 @@ date: 2026-11-14
 weight: 0
 page_cn: ""
 page_orig: ""
-location: "第七章第一段"
+location: "第七章"
 types: [abridgment]
 terms: []
 status: 未修订
