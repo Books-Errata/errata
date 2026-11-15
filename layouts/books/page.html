@@ -12,25 +12,60 @@
   <article class="entry" data-pagefind-body data-pagefind-meta="title:{{ .Title }}　《{{ $book.Title }}》">
     <header class="page-head">
       <h1 lang="{{ $titleLang }}">{{ .Title }}</h1>
-      {{- partial "contrast.html" . }}
     </header>
 
-    <dl class="facts" data-pagefind-ignore>
-      <div><dt>译著</dt><dd><a href="{{ $book.RelPermalink }}" lang="{{ $tl }}">《{{ $book.Title }}》</a>{{ with $book.Params.edition }}<span class="facts__note" lang="{{ $tl }}">{{ . }}</span>{{ end }}</dd></div>
-      {{- with partial "locator.html" (dict "page" . "form" "long") }}
-      <div><dt>位置</dt><dd>{{ . }}</dd></div>
-      {{- end }}
-      <div><dt>类型</dt><dd>{{ partial "type-tags.html" . }}</dd></div>
-      {{- with .GetTerms "terms" }}
-      <div><dt>术语</dt><dd>
-        {{- range $i, $t := . }}{{ if $i }}、{{ end }}<a href="{{ $t.RelPermalink }}">{{ $t.Title }}</a>（<span lang="en">{{ $t.Params.original | default $t.Data.Term }}</span>）{{ end -}}
-      </dd></div>
-      {{- end }}
-      <div><dt>状态</dt><dd>{{ if $revised }}已修订{{ with .Params.revised_in }}<span class="facts__note" lang="{{ $tl }}">{{ . }}</span>{{ end }}{{ else }}未修订{{ end }}</dd></div>
-      <div><dt>核实</dt><dd>{{ if .Params.verified }}已有他人对照原书核实{{ else }}<span class="pending">待核实</span><span class="facts__note">尚无他人对照原书核实</span>{{ end }}</dd></div>
-    </dl>
+    {{- /* 元信息压成两行：出处与位置；类型、程度、修订与核实 */}}
+    <div class="meta" data-pagefind-ignore>
+      <p class="meta__line">
+        <span><a href="{{ $book.RelPermalink }}" lang="{{ $tl }}">《{{ $book.Title }}》</a>{{ with $book.Params.edition }}<span class="meta__note" lang="{{ $tl }}">{{ . }}</span>{{ end }}</span>
+        {{- with partial "locator.html" (dict "page" . "form" "long") }}
+        <span>{{ . }}</span>
+        {{- end }}
+      </p>
+      <p class="meta__line">
+        <span>{{ partial "type-tags.html" . }}</span>
+        {{- with .GetTerms "terms" }}
+        <span>术语：{{ range $i, $t := . }}{{ if $i }}、{{ end }}<a href="{{ $t.RelPermalink }}">{{ $t.Title }}</a>{{ end }}</span>
+        {{- end }}
+        <span>{{ if $revised }}{{ with .Params.revised_in }}已于<span lang="{{ $tl }}">{{ . }}</span>修订{{ else }}译本已修订{{ end }}{{ else }}译本未修订{{ end }}</span>
+        <span>{{ if .Params.verified }}已有他人对照原书核实{{ else }}<span class="pending" title="尚无他人对照原书核实">待核实</span>{{ end }}</span>
+      </p>
+    </div>
 
-    <div class="prose entry__body" lang="{{ $tl }}"><section class="entry-sec entry-sec--lead">{{ .Content }}</section></div>
+    {{- /* 正文：render-heading.html 已把每个二级标题小节包成 <section class="entry-sec entry-sec--角色">。
+           这里把小节重新排列：原文、现译、建议放进对照框，其余（问题、讨论、对照说明、依据）按原顺序排在框下。
+           在模板里排序而不用 CSS，读屏软件和搜索读到的顺序与页面一致。条目文件的写法不变。 */}}
+    {{- $html := printf `<section class="entry-sec entry-sec--lead">%s</section>` .Content }}
+    {{- $secs := findRE `(?s)<section class="entry-sec entry-sec--\w+">.*?</section>` $html }}
+    {{- $role := dict }}
+    {{- $rest := slice }}
+    {{- range $secs }}
+      {{- $r := index (findRESubmatch `entry-sec--(\w+)` . 1) 0 1 }}
+      {{- if in (slice "orig" "current" "suggestion") $r }}
+        {{- $role = merge $role (dict $r .) }}
+      {{- else if or (ne $r "lead") (strings.TrimSpace (replaceRE `^<section[^>]*>|</section>$` `` .)) }}
+        {{- $rest = $rest | append . }}
+      {{- end }}
+    {{- end }}
+    {{- /* 建议里标出改动处：suggested 是建议译法的简短形式，找到第一处就加下划线；已手动加粗的不重复 */}}
+    {{- with $role.suggestion }}
+      {{- $sug := . }}
+      {{- with $.Params.suggested }}
+        {{- if not (strings.Contains $sug "<strong>") }}
+          {{- $q := replaceRE `([.+*?()|\[\]{}^$\\])` `\$1` (htmlEscape .) }}
+          {{- $sug = replaceRE (printf `(?s)^(.*?</h2>.*?)(%s)` $q) `${1}<mark class="key key--sug">${2}</mark>` $sug 1 }}
+        {{- end }}
+      {{- end }}
+      {{- $role = merge $role (dict "suggestion" $sug) }}
+    {{- end }}
+    <div class="prose entry__body" lang="{{ $tl }}">
+      <div class="compare">
+        {{- with $role.orig }}{{ . | safeHTML }}{{ end }}
+        {{- with $role.current }}{{ . | safeHTML }}{{ end }}
+        {{- with $role.suggestion }}{{ . | safeHTML }}{{ end }}
+      </div>
+      {{- range $rest }}{{ . | safeHTML }}{{ end }}
+    </div>
 
     <span hidden data-pagefind-filter="书">{{ $book.Title }}</span>
     {{- range .GetTerms "types" }}<span hidden data-pagefind-filter="类型">{{ .LinkTitle }}</span>{{ end }}

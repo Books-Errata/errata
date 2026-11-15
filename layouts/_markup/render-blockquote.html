@@ -1,15 +1,35 @@
 {{- /*
-  条目页「原文」小节里的引文，标上原文的语言（lang），
-  读屏软件、断行和字体选择才会按原文语言处理。
+  条目页「原文」「现译」小节里的引文。
+  1. 原文小节的引文标上原文的语言（lang），读屏软件、断行和字体选择才会按原文语言处理。
+     原文小节里用中文写的概述（如删节与改写对照）含有汉字，仍按中文处理，见 text-lang.html。
+  2. 标出问题所在的词：出入族条目的标题按规则取自原文，current 取自现译，
+     所以在原文里找标题、在现译里找 current，找到就标出第一处。
+     引文里已经手动加粗（**…**）的，以手动的为准，不再自动标；找不到也不标。
+     对照族（改写、删节）的标题不一定是原文里的词，不自动标，需要时手动加粗。
   所在小节由 render-heading.html 记在 .Page.Store 的 entrySecRole 里。
-  原文小节里用中文写的概述（如删节与改写对照）含有汉字，仍按中文处理，见 text-lang.html。
   其他位置的引文照常输出。
 */ -}}
 {{- $isEntry := and (eq .Page.Kind "page") (eq .Page.Section "books") -}}
+{{- $role := cond $isEntry (.Page.Store.Get "entrySecRole" | default "") "" -}}
 {{- $lang := "" -}}
-{{- if and $isEntry (eq (.Page.Store.Get "entrySecRole") "orig") -}}
+{{- if eq $role "orig" -}}
   {{- $lang = partial "text-lang.html" (dict "text" .Text "book" .Page.CurrentSection) -}}
 {{- end -}}
+{{- $text := .Text -}}
+{{- $family := "" -}}
+{{- with and $isEntry (.Page.GetTerms "types") }}{{ $family = (index . 0).Params.family }}{{ end -}}
+{{- if and (eq $family "discrepancy") (in (slice "orig" "current") $role) (not (strings.Contains $text "<strong>")) -}}
+  {{- $key := cond (eq $role "orig") .Page.Title (.Page.Params.current | default "") -}}
+  {{- if $key -}}
+    {{- /* goldmark 不转义单引号，htmlEscape 会转义，两种写法都试 */ -}}
+    {{- $esc := htmlEscape $key -}}
+    {{- range slice $esc (replace $esc "&#39;" "'") -}}
+      {{- if and (eq $text $.Text) (strings.Contains $text .) -}}
+        {{- $text = replace $text . (printf `<mark class="key">%s</mark>` .) 1 -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
 <blockquote{{ with .Attributes.class }} class="{{ . }}"{{ end }}{{ with $lang }} lang="{{ . }}"{{ end }}>
-{{ .Text -}}
+{{ $text | safeHTML -}}
 </blockquote>

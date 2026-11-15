@@ -307,81 +307,158 @@ blockquote::after { right: 0; bottom: 0; border-width: 0 2px 2px 0; }
 blockquote p { margin: 0 0 0.6em; }
 blockquote p:last-child { margin-bottom: 0; }
 
-/* 条目正文的小节 --------------------------------------------------
-   原文：引文框用正文色，作为基准。
-   现译：同样的框形，框线用次要色，衬一层淡底色。区分角色，不表示对错。
-   建议：左侧一条黛色细线。
-   问题、讨论、依据、对照说明：普通正文。 */
+/* 条目正文 --------------------------------------------------------
+   对照框（.compare）：原文、现译、建议三行，外框以直角引号为形（左上、右下两角），
+   行与行之间一道细线；小节名是框内左侧的小标签。三行用同样的样式，不表示对错。
+   问题所在的词：原文、现译中用浅色底纹（自动标出或手动加粗），建议中用墨色下划线。
+   框下：问题、讨论、对照说明，小标签在内容上方；依据是附注，字号小一些。
+   小节的排列由 books/page.html 完成。 */
 
-/* 空的小节不显示：正文前的引导小节通常是空的；只有标题、没有内容的小节
-   （例如还没写的「依据」）也不显示。补上内容后自动显示。 */
+/* 空的小节不显示：只有标题、没有内容的小节（例如还没写的「依据」）不显示，补上内容后自动显示 */
 .entry-sec:not(:has(> :not(h2))) { display: none; }
 
-.entry-sec--orig blockquote {
-  font-size: 1.05rem;
+.compare {
+  position: relative;
+  margin: 0.4rem 0 0;
 }
-.entry-sec--orig blockquote::before,
-.entry-sec--orig blockquote::after {
-  border-color: var(--ink);
+.compare::before,
+.compare::after {
+  content: "";
+  position: absolute;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 0 solid var(--ink);
+}
+.compare::before { left: 0; top: 0; border-width: 2px 0 0 2px; }
+.compare::after { right: 0; bottom: 0; border-width: 0 2px 2px 0; }
+
+.compare > .entry-sec {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.6em 1fr;
+  gap: 0.6em 1rem;
+  align-items: baseline;
+  padding: 1rem 1.3rem;
+}
+.compare > .entry-sec > :not(h2) { grid-column: 2; }
+/* 行间细线：第一行之外，每一行顶上一道 */
+.compare > .entry-sec ~ .entry-sec::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.3rem;
+  right: 1.3rem;
+  border-top: 1px solid var(--rule);
+}
+.compare > .entry-sec > :last-child { margin-bottom: 0; }
+
+/* 小节名：框内与框下统一为小号淡色标签 */
+.prose .entry-sec > h2 {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--muted);
 }
 
-.entry-sec--current blockquote {
-  background: var(--tint);
-  padding: 0.7em 1.3em;
+/* 框内的引文不再有自己的框 */
+.compare blockquote {
+  width: auto;
+  margin: 0;
+  padding: 0;
 }
-.entry-sec--current blockquote::before,
-.entry-sec--current blockquote::after {
-  border-color: var(--muted);
+.compare blockquote::before,
+.compare blockquote::after { content: none; }
+.compare blockquote + * { margin-top: 0.6em; }
+.entry-sec--orig blockquote { font-size: 1.05rem; }
+
+/* 问题所在的词：原文与现译中为荧光笔式底色 */
+.entry-sec--orig mark.key,
+.entry-sec--current mark.key,
+.entry-sec--orig strong,
+.entry-sec--current strong {
+  font-weight: inherit;
+  color: inherit;
+  background: linear-gradient(transparent 58%, var(--mark) 58%);
+  padding: 0 0.05em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* 建议中的改动处：墨色下划线 */
+.entry-sec--suggestion mark.key--sug,
+.entry-sec--suggestion strong {
+  font-weight: inherit;
+  background: none;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--ink);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.25em;
 }
 
-.entry-sec--suggestion {
-  margin: 2.2em 0;
-  padding: 0.1em 0 0.1em 1.1em;
-  border-left: 2px solid var(--dai);
+/* 框下的小节：标签在上，内容用满宽度 */
+.entry__body > .entry-sec { margin-top: 2rem; }
+.entry__body > .entry-sec > h2 { margin-bottom: 0.5rem; }
+.entry__body > .entry-sec > :last-child { margin-bottom: 0; }
+
+/* 依据：附注 */
+.entry-sec--basis {
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+  color: var(--muted);
 }
-.entry-sec--suggestion > h2 { margin-top: 0; }
-.entry-sec--suggestion > :last-child { margin-bottom: 0; }
-.entry-sec--suggestion + .entry-sec > h2 { margin-top: 0; }
+.entry-sec--basis a { color: var(--ink); }
 
-/* 条目信息 -------------------------------------------------------- */
-
-.facts {
-  margin: 0 0 2.2rem;
-  padding: 0.9rem 0;
+/* 条目元信息：两行，各项之间以间隔号分开 */
+.meta {
+  margin: 0 0 2rem;
+  padding: 0.7rem 0;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
-  font-size: 0.95rem;
-  line-height: 1.7;
-}
-.facts > div {
-  display: grid;
-  grid-template-columns: 5.5em 1fr;
-  gap: 0 1rem;
-  padding: 0.18rem 0;
-}
-.facts dt {
   font-family: var(--sans);
   font-size: 0.85rem;
+  line-height: 1.8;
   color: var(--muted);
-  padding-top: 0.1em;
 }
-.facts dd { margin: 0; }
-.facts__note {
-  margin-left: 0.6em;
-  color: var(--muted);
-  font-size: 0.9em;
+.meta__line {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.4rem;
 }
+.meta__line + .meta__line { margin-top: 0.25rem; }
+.meta__line > span + span::before {
+  content: "・";
+  margin-right: 0.4rem;
+  color: var(--rule);
+}
+.meta a:not(.tag) { color: var(--ink); }
+.meta__note { margin-left: 0.5em; }
+.meta .tags { vertical-align: baseline; }
 
+/* 「现译 → 建议」对照：书页、类型页列表中的一行小字 */
 .contrast {
   margin: 0.5rem 0 0;
   color: var(--muted);
   font-size: 0.95rem;
 }
-.page-head .contrast {
-  margin-top: 0.8rem;
-  font-size: 1.05rem;
-  color: var(--ink);
+.contrast__label {
+  margin-right: 0.15em;
+  font-family: var(--sans);
+  font-size: 0.8em;
+  color: var(--muted);
 }
+.contrast__arrow {
+  margin: 0 0.5em 0 0.3em;
+  font-family: var(--sans);
+  color: var(--muted);
+}
+.contrast__suggested { color: var(--ink); }
+/* 短的现译、建议不从中间断开；长的仍可在框内换行 */
+.contrast__current,
+.contrast__suggested { display: inline-block; max-width: 100%; }
 
 /* 类型标记：两族以颜色和边框线型同时区分 */
 .tags {
@@ -491,6 +568,13 @@ a.tag--comparison:hover { color: var(--dai); }
   font-weight: 700;
 }
 .book-group__title a { text-decoration: none; }
+.book-group__cont {
+  margin-left: 0.3em;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
+}
 .book-group__meta, .catalog__meta {
   margin: 0.15rem 0 0.3rem;
   font-family: var(--sans);
@@ -577,12 +661,12 @@ a.tag--comparison:hover { color: var(--dai); }
 .family--discrepancy > h2 { color: var(--zhu); }
 .family--comparison > h2 { color: var(--dai); }
 
-.type-list, .term-list, .ways { margin: 0; }
-.type-list > div, .term-list > div, .ways > div {
+.type-list, .term-list { margin: 0; }
+.type-list > div, .term-list > div {
   padding: 0.8rem 0;
   border-bottom: 1px solid var(--rule);
 }
-.type-list > div:first-child, .term-list > div:first-child, .ways > div:first-child {
+.type-list > div:first-child, .term-list > div:first-child {
   border-top: 1px solid var(--rule);
 }
 .type-list dt, .term-list dt {
@@ -592,7 +676,7 @@ a.tag--comparison:hover { color: var(--dai); }
   gap: 0.2rem 0.7rem;
 }
 .type-list .tag { font-size: 0.9rem; }
-.type-list dd, .term-list dd, .ways dd {
+.type-list dd, .term-list dd {
   margin: 0.25rem 0 0;
   color: var(--muted);
   font-size: 0.95rem;
@@ -661,24 +745,88 @@ a.tag--comparison:hover { color: var(--dai); }
   color: var(--muted);
 }
 
-.ways { margin-top: 2.6rem; }
-.ways > div {
+/* 首页的各个区块：书目、类型、最近收录。标题小而淡，内容是主角 */
+.home-sec { margin-top: 2.6rem; }
+.home-sec__head {
+  margin: 0 0 0.5rem;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.home-sec__head a { color: inherit; text-decoration: none; }
+.home-sec__head a:hover { color: var(--ink); }
+.home-sec__head a::after { content: " →"; }
+.home-sec__more {
+  margin: 0.5rem 0 0;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+}
+
+/* 书目：书名在左，条数在右，中间以细点线相连 */
+.home-books {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+.home-books li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.home-books a {
+  font-size: 1.05rem;
+  text-decoration: none;
+}
+.home-books a:hover { text-decoration: underline; }
+.home-books__n {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+/* 类型：两族各一行 */
+.home-types {
+  margin: 0;
+  border-top: 1px solid var(--rule);
+}
+.home-types__row {
   display: grid;
-  grid-template-columns: 6em 1fr;
+  grid-template-columns: 3em 1fr;
   gap: 0 1rem;
   align-items: baseline;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
 }
-.ways dt { font-size: 1.1rem; font-weight: 700; }
-.ways dd { margin: 0; }
-
-/* 首页「最近收录」 */
-.recent { margin-top: 2.8rem; }
-.recent > h2 {
-  margin: 0 0 0.6rem;
+.home-types__family {
   font-family: var(--sans);
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
+.home-types__family--discrepancy { color: var(--zhu); }
+.home-types__family--comparison { color: var(--dai); }
+.home-types dd {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.5rem;
+}
+.home-types .tag { font-size: 0.85rem; }
+.tag__n {
+  margin-left: 0.4em;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+.tag--empty { opacity: 0.5; }
+
+/* 最近收录：标题与书名在左，日期在右 */
 .recent__list {
   margin: 0;
   padding: 0;
@@ -686,24 +834,36 @@ a.tag--comparison:hover { color: var(--dai); }
   border-top: 1px solid var(--rule);
 }
 .recent__item {
-  display: grid;
-  grid-template-columns: 7.5em 1fr;
-  gap: 0 1rem;
+  display: flex;
   align-items: baseline;
-  padding: 0.6rem 0;
+  gap: 0.4rem 1rem;
+  padding: 0.5rem 0;
   border-bottom: 1px solid var(--rule);
 }
+.recent__body { flex: 1; min-width: 0; }
+.recent__body > a { text-decoration: none; }
+.recent__body > a:hover { text-decoration: underline; }
 .recent__date {
+  flex-shrink: 0;
   font-family: var(--sans);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
 .recent__book {
+  display: inline-block; /* 书名整体换行，不从中间断开 */
   margin-left: 0.4rem;
   font-size: 0.9rem;
   color: var(--muted);
 }
+
+.home__join {
+  margin: 2.6rem 0 0;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+.home__join a { color: var(--ink); }
 
 /* 搜索 ------------------------------------------------------------ */
 
@@ -858,8 +1018,14 @@ a.tag--comparison:hover { color: var(--dai); }
   .entry-row { grid-template-columns: 1fr; }
   .entry-row__page { text-align: left; padding-top: 0; }
   .facts > div { grid-template-columns: 4.8em 1fr; }
-  .ways > div { grid-template-columns: 1fr; }
-  .recent__item { grid-template-columns: 1fr; }
+  .compare > .entry-sec { grid-template-columns: 1fr; padding: 0.9rem 1rem; gap: 0.3em; }
+  .compare > .entry-sec > :not(h2) { grid-column: 1; }
+  .compare > .entry-sec ~ .entry-sec::before { left: 1rem; right: 1rem; }
+  /* 窄屏：出处与位置各占一行，不用间隔号 */
+  .meta__line:first-child { flex-direction: column; }
+  .meta__line:first-child > span + span::before { content: none; }
+  .recent__item { flex-direction: column; gap: 0; }
+  .home-types__row { grid-template-columns: 1fr; gap: 0.35rem; }
 }
 
 /* 打印 ------------------------------------------------------------ */

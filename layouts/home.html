@@ -1,10 +1,12 @@
 {{ define "main" }}
 {{- $books := site.GetPage "/books" }}
 {{- $entries := $books.RegularPagesRecursive }}
+{{- $types := site.GetPage "/types" }}
 <div class="wrap home">
   <h1 class="home__title"><span class="home__mark">推敲</span><span class="home__sub">译著勘误</span></h1>
   <div class="prose home__intro">{{ .Content }}</div>
-  <p class="home__stats">本站已收录 {{ len $books.Sections }} 本书的 {{ len $entries }} 则勘误。</p>
+  {{- /* 统计只说「条」：对照族（改写、删节）不称为勘误或错误 */}}
+  <p class="home__stats">已收录 {{ len $books.Sections }} 本书、{{ len $entries }} 条</p>
 
   <form class="search-form" action="{{ "search/" | relURL }}" method="get" role="search">
     <label class="visually-hidden" for="home-q">搜索</label>
@@ -12,11 +14,44 @@
     <button type="submit">搜索</button>
   </form>
 
-  <dl class="ways">
-    <div><dt><a href="{{ "books/" | relURL }}">按书目</a></dt><dd>所有收录的中译本，按书名排序。</dd></div>
-    <div><dt><a href="{{ "types/" | relURL }}">按类型</a></dt><dd>译名、词义、句法等六类出入，按程度分为错误、不够精确、可商榷；改写与删节只做对照。</dd></div>
-    <div><dt><a href="{{ "contribute/" | relURL }}">参与贡献</a></dt><dd>提交新的勘误，或指正已有条目。</dd></div>
-  </dl>
+  {{- /* 按书：书名与条数。书多了以后只列前 $max 本，其余到书目页看 */}}
+  {{- $max := 8 }}
+  {{- $sorted := partial "sort-books.html" $books.Sections }}
+  <section class="home-sec" aria-labelledby="home-books">
+    <h2 class="home-sec__head" id="home-books"><a href="{{ $books.RelPermalink }}">书目</a></h2>
+    <ul class="home-books">
+      {{- range first $max $sorted }}
+      <li>
+        <a href="{{ .RelPermalink }}" lang="{{ partial "book-lang.html" . }}">{{ .Title }}</a>
+        <span class="home-books__n">{{ len .RegularPages }} 条</span>
+      </li>
+      {{- end }}
+    </ul>
+    {{- if gt (len $sorted) $max }}
+    <p class="home-sec__more"><a href="{{ $books.RelPermalink }}">全部 {{ len $sorted }} 本书</a></p>
+    {{- end }}
+  </section>
+
+  {{- /* 按类型：两族各一行，标签后附条数；还没有条目的类型也列出，便于了解分类 */}}
+  {{- with $types }}
+  <section class="home-sec" aria-labelledby="home-types">
+    <h2 class="home-sec__head" id="home-types"><a href="{{ .RelPermalink }}">类型</a></h2>
+    <dl class="home-types">
+      {{- range slice (dict "family" "discrepancy" "name" "出入") (dict "family" "comparison" "name" "对照") }}
+      {{- $f := .family }}
+      <div class="home-types__row">
+        <dt class="home-types__family home-types__family--{{ $f }}">{{ .name }}</dt>
+        <dd>
+          {{- range where $types.Pages.ByWeight "Params.family" $f }}
+          {{- $n := len .Pages }}
+          <a class="tag tag--{{ $f }}{{ if not $n }} tag--empty{{ end }}" href="{{ .RelPermalink }}">{{ .LinkTitle }}<span class="tag__n">{{ $n }}</span></a>
+          {{- end }}
+        </dd>
+      </div>
+      {{- end }}
+    </dl>
+  </section>
+  {{- end }}
 
   {{- /* 最近收录：按 front matter 的 date 取最新的五条；没有 date 的条目不列入 */}}
   {{- $recent := slice }}
@@ -24,22 +59,24 @@
     {{- if and (not .Date.IsZero) (lt (len $recent) 5) }}{{ $recent = $recent | append . }}{{ end }}
   {{- end }}
   {{- with $recent }}
-  <section class="recent">
-    <h2>最近收录</h2>
+  <section class="home-sec" aria-labelledby="home-recent">
+    <h2 class="home-sec__head" id="home-recent">最近收录</h2>
     <ol class="recent__list">
       {{- range . }}
       {{- $book := .CurrentSection }}
       {{- $titleLang := .Params.title_lang | default (partial "text-lang.html" (dict "text" .Title "book" $book)) }}
       <li class="recent__item">
-        <time class="recent__date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年1月2日" }}</time>
         <span class="recent__body">
           <a href="{{ .RelPermalink }}" lang="{{ $titleLang }}">{{ .Title }}</a>
           <span class="recent__book" lang="{{ partial "book-lang.html" $book }}">《{{ $book.Title }}》</span>
         </span>
+        <time class="recent__date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006年1月2日" }}</time>
       </li>
       {{- end }}
     </ol>
   </section>
   {{- end }}
+
+  <p class="home__join">读到可疑的译文？<a href="{{ "contribute/" | relURL }}">参与贡献</a></p>
 </div>
 {{ end }}

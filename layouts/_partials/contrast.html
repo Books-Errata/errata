@@ -1,9 +1,14 @@
-{{- /* 「现译……，建议……」对照；两项都有时才显示。对照族（改写、删节）不给建议，不显示 */ -}}
+{{- /* 「现译……→ 建议……」对照；两项都有时才显示。对照族（改写、删节）不给建议，不显示。
+       箭头只是视觉提示，读屏软件读到的是「现译……，建议……」。
+       箭头放在「建议」一侧，窄屏换行时随建议一起换到下一行 */ -}}
 {{- $tl := partial "book-lang.html" .CurrentSection -}}
 {{- $family := "" -}}
 {{- with .GetTerms "types" }}{{ $family = (index . 0).Params.family }}{{ end -}}
 {{- if ne $family "comparison" -}}
 {{- with and .Params.current .Params.suggested }}
-<p class="contrast">现译「<span lang="{{ $tl }}">{{ $.Params.current }}</span>」，建议「<span lang="{{ $tl }}">{{ $.Params.suggested }}</span>」</p>
+<p class="contrast">
+  <span class="contrast__current"><span class="contrast__label">现译</span>「<span lang="{{ $tl }}">{{ $.Params.current }}</span>」</span>
+  <span class="contrast__suggested"><span class="contrast__arrow" aria-hidden="true">→</span><span class="visually-hidden">，</span><span class="contrast__label">建议</span>「<span lang="{{ $tl }}">{{ $.Params.suggested }}</span>」</span>
+</p>
 {{- end }}
 {{- end -}}

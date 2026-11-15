@@ -10,8 +10,9 @@
     {{- $tl := partial "book-lang.html" . }}
     <li class="catalog__item">
       <a class="catalog__title" href="{{ .RelPermalink }}" lang="{{ $tl }}">{{ .Title }}</a>
+      {{- $src := .Params.source_lang }}
       {{- with .Params.original_title }}
-      <cite class="catalog__orig" lang="{{ $.Params.source_lang }}">{{ . }}</cite>
+      <cite class="catalog__orig" lang="{{ $src }}">{{ . }}</cite>
       {{- end }}
       <p class="catalog__meta" lang="{{ $tl }}">
         {{- with .Params.translator }}<span>{{ . }} 译</span>{{ end -}}

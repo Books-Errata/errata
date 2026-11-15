@@ -1,19 +1,62 @@
 {{ define "main" }}
 {{- $f := .Params.family | default "discrepancy" }}
+{{- /* 条目顺序：书按书名排序，同一本书内按页码（没有页码的排在后面，与书页一致）。
+       先排好再分页，每页条数见 hugo.toml 的 [pagination] pagerSize。
+       Hugo 的分组分页不能按「所属的书」分组，所以分页后在输出时遇到换书再插入书名。 */}}
+{{- $ordered := slice }}
+{{- range partial "sort-books.html" (partial "books-of.html" .Pages) }}
+  {{- $b := . }}
+  {{- range $.Pages.ByWeight }}
+    {{- if eq .CurrentSection.Path $b.Path }}{{ $ordered = $ordered | append . }}{{ end }}
+  {{- end }}
+{{- end }}
+{{- $pager := .Paginate $ordered }}
+{{- $first := eq $pager.PageNumber 1 }}
 <div class="wrap">
   <nav class="crumbs" aria-label="位置"><a href="{{ "types/" | relURL }}">类型</a></nav>
-  <article data-pagefind-body>
+  <article{{ if $first }} data-pagefind-body{{ end }}>
     <header class="page-head">
       <h1>{{ .Title }}</h1>
       <p class="page-head__note">
         <span class="tag tag--{{ $f }}">{{ if eq $f "comparison" }}对照{{ else }}出入{{ end }}</span>
         <span class="slug" lang="en">{{ .Data.Term }}</span>
+        <span>本类已收录 {{ len .Pages }} 条</span>
       </p>
     </header>
+    {{- /* 说明文字只在第一页显示，翻页后直接看条目 */}}
+    {{- if $first }}
     <div class="prose">{{ .Content }}</div>
-    <section class="entries" data-pagefind-ignore>
+    {{- end }}
+    <section class="entries" id="entries" data-pagefind-ignore>
       <h2>条目</h2>
-      {{ partial "grouped-by-book.html" .Pages }}
+      {{- with $pager.Pages }}
+      {{- $offset := mul (sub $pager.PageNumber 1) $pager.PagerSize }}
+      {{- $prev := "" }}
+      {{- range $i, $p := . }}
+        {{- $b := $p.CurrentSection }}
+        {{- if ne $b.Path $prev }}
+          {{- if $prev }}</ul></section>{{ end }}
+          {{- /* 这本书的条目是否从上一页接续而来 */}}
+          {{- $idx := add $offset $i }}
+          {{- $cont := and (gt $idx 0) (eq (index $ordered (sub $idx 1)).CurrentSection.Path $b.Path) }}
+          {{- $tl := partial "book-lang.html" $b }}
+<section class="book-group">
+  <h3 class="book-group__title"><a href="{{ $b.RelPermalink }}" lang="{{ $tl }}">《{{ $b.Title }}》</a>{{ if $cont }}<span class="book-group__cont">（续）</span>{{ end }}</h3>
+  <p class="book-group__meta" lang="{{ $tl }}">
+    {{- with $b.Params.translator }}<span>{{ . }} 译</span>{{ end -}}
+    {{- with $b.Params.publisher }}<span>{{ . }}</span>{{ end -}}
+  </p>
+  <ul class="entry-list">
+          {{- $prev = $b.Path }}
+        {{- end }}
+        {{- partial "entry-row.html" $p }}
+      {{- end }}
+  </ul>
+</section>
+      {{- else }}
+      <p class="empty">暂无条目。</p>
+      {{- end }}
+      {{- partial "pager.html" $pager }}
     </section>
   </article>
 </div>

@@ -1,0 +1,11 @@
+{{- /* 输入一组条目，返回它们所属的书（section），不重复，顺序不定；排序用 sort-books.html */ -}}
+{{- $seen := slice -}}
+{{- $books := slice -}}
+{{- range . -}}
+  {{- $b := .CurrentSection -}}
+  {{- if not (in $seen $b.Path) -}}
+    {{- $seen = $seen | append $b.Path -}}
+    {{- $books = $books | append $b -}}
+  {{- end -}}
+{{- end -}}
+{{- return $books -}}
